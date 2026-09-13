@@ -59,8 +59,11 @@ index.html은 실제로 열어 텍스트를 위에서 아래 순서로 뽑아 �
 현재 폴더에 `personas.jsonl`이 없으면 받는다.
 
 ```bash
-curl -L -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-customers/main/personas.jsonl
+curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-customers/main/personas.jsonl \
+  || curl -fL -o personas.jsonl https://cdn.jsdelivr.net/gh/junleefc/first-7-customers@main/personas.jsonl
 ```
+
+받은 뒤 `wc -l personas.jsonl`이 5000인지 확인한다. 아니면 다시 받는다.
 
 파일은 5,000명, 한 줄에 한 명, JSON이다. 필드:
 
@@ -161,7 +164,8 @@ for r in cand[:30]:
 **REPORT.html** : 아래 템플릿을 받아 채운다. 템플릿 안의 `{{ }}` 자리를 전부 채우고, 카드는 7개를 만든다. 템플릿의 CSS와 구조는 바꾸지 않는다.
 
 ```bash
-curl -L -o /tmp/report-template.html https://raw.githubusercontent.com/junleefc/first-7-customers/main/templates/report.html
+curl -fL -o /tmp/report-template.html https://raw.githubusercontent.com/junleefc/first-7-customers/main/templates/report.html \
+  || curl -fL -o /tmp/report-template.html https://cdn.jsdelivr.net/gh/junleefc/first-7-customers@main/templates/report.html
 ```
 
 템플릿의 치환 규칙은 템플릿 파일 맨 위 주석에 있다. 손으로 치환하지 말고 python으로 한다. 답변 텍스트는 `html.escape`로 넣는다(큰따옴표, `<`, `&`가 카드를 깨뜨린다).
