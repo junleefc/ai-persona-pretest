@@ -93,21 +93,18 @@ REPORT.md의 결론을 반영해서 index.html을 고쳐줘.
 
 ---
 
-## 데이터: 가상 한국인 100만 명
+## 데이터: 가상 한국인 1만 명
 
 NVIDIA가 공개한 **Nemotron-Personas-Korea**를 씁니다. 통계청, 대법원, 건강보험공단 등 실제 공공 통계를 바탕으로 AI가 만든 100만 명의 가상 한국인 프로필입니다. 한 사람마다 나이, 성별, 지역, 직업, 학력, 혼인, 가구 형태, 주거 형태와 함께 직업·가족·관심사·목표를 서술한 한국어 텍스트가 있습니다. 가상 인물이라 개인정보 문제가 없습니다.
 
-**7명은 100만 명 전체에서 뽑습니다.** 클로드가 HuggingFace 데이터셋 서버 API에 기획서의 "누구" 조건을 걸어 전체에서 검색하고(예: 30~45세, 자녀와 거주, 텍스트에 "맞벌이" 또는 "학교"), 조건에 맞는 사람들 중 무작위 위치에서 100명을 받아 그중 7명을 고릅니다. 다운로드나 설치는 없습니다. 조건에 맞는 전체 인원(예: 8,380명)은 리포트의 선별 메모에 적힙니다.
-
-API가 안 될 때만 리포에 넣어 둔 [personas.jsonl](personas.jsonl)을 씁니다. 100만 명에서 연령대 6 × 성별 2 × 권역 5의 60개 집단별로 원본 비율대로 뽑은 5,000명(층화 추출, 각 집단 최소 30명)이고, 11MB라 바로 받을 수 있습니다. 추출 방법은 [scripts/build_sample.py](scripts/build_sample.py)에 있습니다.
+원본은 1.8GB라 그대로 쓸 수 없어서, **100만 명을 100분의 1로 줄인 1만 명**을 [personas.jsonl](personas.jsonl)에 넣어 두었습니다. 그냥 무작위로 뽑으면 수가 적은 집단(예: 강원 70대 여성)이 빠질 수 있어서, 연령대 6개 × 남녀 × 지역 5권역의 60개 칸으로 나눠 칸마다 원본 비율 그대로 뽑고 어떤 칸이든 최소 50명은 넣었습니다. 그래서 이 파일은 한국 인구 구성을 그대로 닮은 작은 한국입니다. 어떤 타깃을 넣어도 후보가 수십 명 이상 나옵니다.
 
 | 항목 | 내용 |
 |---|---|
 | 제작 | NVIDIA |
-| 원본 | [huggingface.co/datasets/nvidia/Nemotron-Personas-Korea](https://huggingface.co/datasets/nvidia/Nemotron-Personas-Korea) |
+| 원본 | [huggingface.co/datasets/nvidia/Nemotron-Personas-Korea](https://huggingface.co/datasets/nvidia/Nemotron-Personas-Korea), 100만 명 |
 | 라이선스 | CC BY 4.0 |
-| 검색 방식 | HuggingFace 데이터셋 서버 filter API (100만 명 전체) |
-| 오프라인 대체 | personas.jsonl 5,000명 |
+| 이 리포의 파일 | 10,000명 (원본의 1%), 23MB, 뽑는 방법은 [scripts/build_sample.py](scripts/build_sample.py) |
 
 ---
 
@@ -117,7 +114,7 @@ API가 안 될 때만 리포에 넣어 둔 [personas.jsonl](personas.jsonl)을 �
 |---|---|
 | [PROMPT.md](PROMPT.md) | 참가자가 복사하는 프롬프트 3개 |
 | [GUIDE.md](GUIDE.md) | 클로드가 읽고 따르는 진행 안내. 페르소나 고르기, 인터뷰 질문, 종합 규칙, 출력 형식 |
-| [personas.jsonl](personas.jsonl) | 오프라인 대체용 가상 한국인 5,000명 (기본은 API로 100만 명 전체 검색) |
+| [personas.jsonl](personas.jsonl) | 가상 한국인 10,000명 (100만 명의 1%) |
 | [templates/report.html](templates/report.html) | REPORT.html 템플릿 |
 | [examples/gajeongtongsinmun](examples/gajeongtongsinmun) | 실행 예시. 입력(기획서, PRD, 페이지)과 출력(REPORT) |
 | [LICENSE-DATA.md](LICENSE-DATA.md) | 데이터 출처 표기 |

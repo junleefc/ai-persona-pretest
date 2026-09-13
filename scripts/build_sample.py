@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
-NVIDIA Nemotron-Personas-Korea 원본(100만 명)에서 5,000명을 층화 추출해 personas.jsonl로 저장한다.
+NVIDIA Nemotron-Personas-Korea 원본(100만 명)에서 10,000명(100만 명의 1%)을 층화 추출해 personas.jsonl로 저장한다.
 제작자용 스크립트. 참가자는 실행하지 않는다.
 
-층화 기준: 연령대(6) x 성별(2) x 권역(5). 각 셀에 원본 비율만큼 배정하되 최소 30명 보장.
+층화 기준: 연령대(6) x 성별(2) x 권역(5). 각 셀에 원본 비율만큼 배정하되 최소 50명 보장.
 """
 import glob, json, os, sys
 import pandas as pd
 
 SNAP = os.path.expanduser("~/.cache/huggingface/hub/datasets--nvidia--Nemotron-Personas-Korea/snapshots/*/data/train-*.parquet")
-N_TOTAL = 5000
-MIN_PER_CELL = 30
+N_TOTAL = 10000
+MIN_PER_CELL = 50
 SEED = 7
 
 KEEP = ["uuid", "age", "sex", "province", "district", "occupation", "education_level",

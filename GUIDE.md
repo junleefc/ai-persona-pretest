@@ -54,31 +54,20 @@ index.html은 실제로 열어 텍스트를 위에서 아래 순서로 뽑아 �
 
 ---
 
-## 2. 페르소나 데이터
+## 2. 페르소나 파일 준비
 
-**기본: HuggingFace 데이터셋 서버 API로 100만 명 전체에서 조건 검색한다.** 다운로드도 설치도 없다. curl 하나면 된다.
-
-```bash
-curl -s -G "https://datasets-server.huggingface.co/filter" \
-  --data-urlencode "dataset=nvidia/Nemotron-Personas-Korea" \
-  --data-urlencode "config=default" --data-urlencode "split=train" \
-  --data-urlencode "where=\"age\">=30 AND \"age\"<=45 AND \"family_type\" LIKE '%자녀%'" \
-  --data-urlencode "length=100" --data-urlencode "offset=0" -o candidates.json
-```
-
-- `where`는 SQL 조건이다. 컬럼명은 큰따옴표, 문자열 값은 작은따옴표. 텍스트 검색은 `"persona" LIKE '%워킹맘%'`처럼 LIKE로 하고, 여러 키워드는 OR로 묶는다. 검색 대상 텍스트 컬럼: persona, professional_persona, family_persona, skills_and_expertise, hobbies_and_interests, career_goals_and_ambitions.
-- 응답의 `num_rows_total`이 조건에 맞는 전체 인원이다. 이 숫자를 "선별 메모"에 적는다(예: "100만 명 중 조건 매칭 8,380명").
-- 무작위 추출: `offset`을 0부터 `num_rows_total - 100` 사이 난수로 주고 `length=100`으로 받는다. 그 100명이 후보다. 첫 호출은 20초쯤 걸리고 그다음은 몇 초다.
-- 컬럼: uuid, age, sex, marital_status, military_status, family_type, housing_type, education_level, bachelors_field, occupation, district, province, country, persona, professional_persona, family_persona, sports_persona, arts_persona, travel_persona, culinary_persona, cultural_background, skills_and_expertise, hobbies_and_interests, career_goals_and_ambitions.
-
-**대체: API가 실패하면(응답에 `error`가 있거나 HTTP 200이 아니면) 리포의 5,000명 샘플을 쓴다.**
+현재 폴더에 `personas.jsonl`이 없으면 받는다. 23MB다.
 
 ```bash
 curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-customers/main/personas.jsonl \
-  || curl -fL -o personas.jsonl https://cdn.jsdelivr.net/gh/junleefc/first-7-customers@main/personas.jsonl
+  || (curl -fL -o personas.jsonl.gz https://cdn.jsdelivr.net/gh/junleefc/first-7-customers@main/personas.jsonl.gz && gunzip -f personas.jsonl.gz)
 ```
 
-한 줄에 한 명, JSON. 필드는 위 컬럼 중 uuid, age, sex, province, district, occupation, education_level, marital_status, family_type, housing_type, persona, professional_persona, family_persona, skills_and_expertise, hobbies_and_interests, career_goals_and_ambitions. 이 경우 선별 메모에 "API 실패로 5,000명 샘플 사용"이라고 적는다.
+받은 뒤 `wc -l personas.jsonl`이 10000인지 확인한다. 아니면 다시 받는다.
+
+파일은 10,000명, 한 줄에 한 명, JSON이다. NVIDIA Nemotron-Personas-Korea 100만 명을 연령대·성별·권역 비율 그대로 100분의 1로 줄인 것이다. 필드:
+
+`uuid, age, sex, province, district, occupation, education_level, marital_status, family_type, housing_type, persona, professional_persona, family_persona, skills_and_expertise, hobbies_and_interests, career_goals_and_ambitions`
 
 이름은 `persona` 텍스트 첫머리에 "OOO 씨"로 나온다. 그 이름을 그대로 쓴다. 새 이름을 짓지 않는다.
 
@@ -104,26 +93,22 @@ curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-cu
 python 예시 (그대로 쓰지 말고 조건에 맞게 바꾼다):
 
 ```python
-import json, random, subprocess, urllib.parse
-where = ('"age">=30 AND "age"<=45 AND "family_type" LIKE \'%자녀%\' AND ('
-         '"persona" LIKE \'%아이%\' OR "family_persona" LIKE \'%학교%\' OR '
-         '"persona" LIKE \'%워킹맘%\' OR "persona" LIKE \'%맞벌이%\')')
-base = "https://datasets-server.huggingface.co/filter?" + urllib.parse.urlencode(
-    {"dataset": "nvidia/Nemotron-Personas-Korea", "config": "default", "split": "train", "where": where})
-def fetch(offset, length=100):
-    out = subprocess.run(["curl", "-s", f"{base}&offset={offset}&length={length}"], capture_output=True, text=True).stdout
-    return json.loads(out)
-first = fetch(0, 1)
-total = first["num_rows_total"]
+import json, random
+rows = [json.loads(l) for l in open("personas.jsonl", encoding="utf-8")]
+def hit(r):
+    text = r["persona"] + r["professional_persona"] + r["family_persona"]
+    return 30 <= r["age"] <= 45 \
+        and "자녀" in r["family_type"] \
+        and any(k in text for k in ["아이", "자녀", "학교", "학부모", "워킹맘", "맞벌이", "등하교", "준비물"])
+cand = [r for r in rows if hit(r)]
 random.seed()
-d = fetch(random.randint(0, max(0, total - 100)))
-cand = [r["row"] for r in d["rows"]]
-print("100만 명 중 조건 매칭", total, "명 / 후보", len(cand), "명")
+random.shuffle(cand)
+print("10,000명 중 조건 매칭", len(cand), "명")
 for r in cand[:30]:
     print(r["age"], r["sex"], r["district"], r["occupation"], "|", r["persona"][:60])
 ```
 
-대체 파일(personas.jsonl)을 쓸 때는 `rows = [json.loads(l) for l in open("personas.jsonl", encoding="utf-8")]`로 읽고 같은 조건을 python으로 건다.
+선별 메모에 "10,000명 중 조건 매칭 N명"을 적는다.
 
 고른 7명을 아래 표로 사용자에게 보여준 뒤 인터뷰로 넘어간다. 사용자 승인을 기다리지 않는다.
 
