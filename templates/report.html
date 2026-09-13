@@ -83,6 +83,38 @@
   .fix{margin-top:16px;padding:12px 14px;background:var(--main-soft);border-left:3px solid var(--main);border-radius:0 8px 8px 0;font-size:14.5px;line-height:1.55}
   .fix b{display:block;font-size:12px;color:var(--main);letter-spacing:.04em;margin-bottom:4px}
 
+  /* 추출 깔때기 */
+  .samp{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:32px 40px}
+  .funnel{display:grid;grid-template-columns:minmax(0,440px) 1fr;gap:28px;align-items:center}
+  .fbands{display:flex;flex-direction:column;gap:6px}
+  .fband{height:64px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:22px;letter-spacing:-.01em;margin:0 auto;width:100%}
+  .fband:nth-child(1){width:100%;background:#C9B9A7;clip-path:polygon(0 0,100% 0,94% 100%,6% 100%)}
+  .fband:nth-child(2){width:88%;background:#B08968;clip-path:polygon(0 0,100% 0,92% 100%,8% 100%)}
+  .fband:nth-child(3){width:72%;background:#9A5427;clip-path:polygon(0 0,100% 0,89% 100%,11% 100%)}
+  .fband:nth-child(4){width:52%;background:var(--ok);clip-path:polygon(0 0,100% 0,84% 100%,16% 100%)}
+  .fband small{font-size:12px;font-weight:600;opacity:.9;margin-left:8px}
+  .flabels{display:flex;flex-direction:column;gap:6px}
+  .flabel{height:64px;display:flex;flex-direction:column;justify-content:center;font-size:14.5px;line-height:1.4}
+  .flabel b{font-size:15px}
+  .flabel span{color:var(--sub)}
+  .cond{width:100%;border-collapse:collapse;margin-top:26px;font-size:14.5px}
+  .cond th{text-align:left;font-size:12px;letter-spacing:.06em;color:var(--sub);font-weight:700;padding:0 10px 8px 0;border-bottom:1px solid var(--line)}
+  .cond td{padding:10px 10px 10px 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
+  .cond td:first-child{color:var(--ink);font-weight:600;width:28%}
+  .cond tr:last-child td{border-bottom:0}
+  .notes{margin:18px 0 0;padding:0;list-style:none;font-size:14px;color:var(--ink2)}
+  .notes li{padding:4px 0 4px 14px;position:relative}
+  .notes li::before{content:"";position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--main)}
+  details.cands{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+  details.cands summary{cursor:pointer;font-size:14px;font-weight:700;color:var(--main);list-style:none}
+  details.cands summary::before{content:"+ ";}
+  details.cands[open] summary::before{content:"- ";}
+  .cands table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+  .cands td,.cands th{padding:5px 8px 5px 0;border-bottom:1px solid #EFEDE7;text-align:left;color:var(--ink2)}
+  .cands th{font-size:11.5px;color:var(--sub);letter-spacing:.04em}
+  .cands tr.picked td{color:var(--ink);font-weight:600;background:var(--main-soft)}
+  @media (max-width:720px){ .samp{padding:24px 22px} .funnel{grid-template-columns:1fr} .fband{height:52px;font-size:18px} .flabel{height:auto;padding:2px 0} }
+
   .qs{display:grid;gap:12px}
   .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;display:flex;gap:16px;align-items:flex-start;font-size:16px}
   .q i{font-style:normal;font-weight:800;color:var(--main);font-size:20px;line-height:1.3;flex-shrink:0}
@@ -143,6 +175,50 @@
   <div class="callouts">
     <div class="callout" id="form"><h3>신청 항목</h3><p>{{FORM_NOTE}}</p></div>
     <div class="callout"><h3>근처 2명이 말해 주는 것</h3><p>{{NEAR_INSIGHT}}</p></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="sec-h"><h2>이 7명은 어떻게 뽑았나</h2><span>{{SOURCE_SHORT}}</span></div>
+  <div class="samp">
+    <div class="funnel">
+      <div class="fbands">
+        <div class="fband">1,000,000<small>명</small></div>
+        <div class="fband">{{MATCHED_N}}<small>명</small></div>
+        <div class="fband">{{FETCHED_N}}<small>명</small></div>
+        <div class="fband">7<small>명</small></div>
+      </div>
+      <div class="flabels">
+        <div class="flabel"><b>가상 한국인 전체</b><span>{{SOURCE_LINE}}</span></div>
+        <div class="flabel"><b>조건에 맞는 사람</b><span>{{MATCH_LINE}}</span></div>
+        <div class="flabel"><b>프로필을 받은 후보</b><span>{{FETCH_LINE}}</span></div>
+        <div class="flabel"><b>인터뷰한 7명</b><span>{{PICK_LINE}}</span></div>
+      </div>
+    </div>
+    <table class="cond">
+      <thead><tr><th>기획서의 누구</th><th>검색 조건</th><th>결과</th></tr></thead>
+      <tbody>
+<!-- COND START -->
+        <tr><td>{{C_WHO}}</td><td>{{C_COND}}</td><td>{{C_RESULT}}</td></tr>
+<!-- COND END -->
+      </tbody>
+    </table>
+    <ul class="notes">
+<!-- NOTE START -->
+      <li>{{NOTE}}</li>
+<!-- NOTE END -->
+    </ul>
+    <details class="cands">
+      <summary>후보 {{CAND_N}}명 전체 보기 (색이 칠해진 사람이 인터뷰한 7명)</summary>
+      <table>
+        <thead><tr><th>이름</th><th>나이</th><th>성별</th><th>지역</th><th>직업</th><th>가족</th></tr></thead>
+        <tbody>
+<!-- CAND START -->
+          <tr class="{{CAND_CLASS}}"><td>{{CAND_NAME}}</td><td>{{CAND_AGE}}</td><td>{{CAND_SEX}}</td><td>{{CAND_DISTRICT}}</td><td>{{CAND_OCC}}</td><td>{{CAND_FAMILY}}</td></tr>
+<!-- CAND END -->
+        </tbody>
+      </table>
+    </details>
   </div>
 </section>
 

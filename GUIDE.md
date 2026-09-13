@@ -180,6 +180,13 @@ curl -fL -o fill_report.py https://raw.githubusercontent.com/junleefc/first-7-cu
    - `form_note`(신청 항목 지적. 없으면 `null`), `near_insight`
    - `personas` 7명: `name, age, sex, district, occupation, kind(target|near), verdict(yes|no|maybe), stop(첫 화면|차이|무료 제안|신청 항목|없음), a1~a5, fix`
    - `real_questions` 3개
+   - `sampling`: 이 7명을 어떻게 뽑았는지. 리포트에 깔때기(100만 명 → 조건 매칭 N명 → 프로필 수신 N명 → 7명)와 조건 표로 그려진다. 반드시 채운다.
+     - `matched_total`, `fetched`: find_personas.py 출력의 숫자 그대로
+     - `match_line`: 검색 조건을 한 줄로 (예: "30~55세 남성, 서울·경기·인천, 직업에 자재 또는 건설 + 영업")
+     - `fetch_line`: "N명 중 무작위 40명 요청, M명 수신"
+     - `conditions`: 표 3줄. 타깃 조건(기획서의 누구 → 검색 조건 → 결과), 근처 1(나이 축), 근처 2(직업 축)
+     - `notes`: 데이터 한계 1~3줄 (예: "직업명에 레미콘은 없어 건축자재 영업원으로 대체")
+     - `candidates`: candidates.json과 근처 검색 결과의 후보 전원. 이름·나이·성별·지역·직업·가구. 7명에 든 사람은 `picked: true`
    - 누른다/모르겠다/안 누른다 수는 스크립트가 personas에서 센다. 따로 쓰지 않는다.
 
 3. 실행한다.
