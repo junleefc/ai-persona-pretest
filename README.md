@@ -45,8 +45,8 @@ REPORT.md의 결론을 반영해서 index.html을 고쳐줘.
 | 단계 | 시간 | 채팅창에 보이는 것 |
 |---|---|---|
 | 기획서와 페이지 읽기 | 30초 | 기획서에서 뽑은 여섯 가지 표 |
-| 가상 한국인 파일 받기 | 10~30초 | 23MB 다운로드. 한 번 받으면 다음엔 안 받습니다 |
-| 7명 고르기 | 30초 | 7명 표(이름, 나이, 지역, 직업, 고른 이유)와 "10,000명 중 조건 매칭 N명" |
+| 100만 명에서 조건 검색 | 20~40초 | HuggingFace API 호출. 조건에 맞는 전체 인원이 나옵니다 |
+| 7명 고르기 | 30초 | 7명 표(이름, 나이, 지역, 직업, 고른 이유)와 "100만 명 중 조건 매칭 N명" |
 | 7명 인터뷰 | 3~5분 | 가장 오래 걸립니다. 한 사람씩 답이 올라옵니다 |
 | 종합과 리포트 만들기 | 1~2분 | REPORT.md, REPORT.html 저장 후 브라우저가 열립니다 |
 
@@ -54,7 +54,7 @@ REPORT.md의 결론을 반영해서 index.html을 고쳐줘.
 
 - **REPORT.html** 브라우저로 보는 리포트. 이걸 보시면 됩니다
 - **REPORT.md** 같은 내용의 글. "REPORT.md를 반영해서 고쳐줘"라고 할 때 클로드가 읽습니다
-- **personas.jsonl** 가상 한국인 10,000명. 지우지 마세요. 다시 돌릴 때 씁니다
+- **candidates.json** 100만 명에서 검색해 받은 후보. 둬도 되고 지워도 됩니다
 
 report.json이 하나 더 생기는데 리포트를 만들 때 쓴 재료입니다. 둬도 되고 지워도 됩니다.
 
@@ -117,18 +117,23 @@ report.json이 하나 더 생기는데 리포트를 만들 때 쓴 재료입니�
 
 ---
 
-## 데이터: 가상 한국인 1만 명
+## 데이터: 가상 한국인 100만 명
 
 NVIDIA가 공개한 **Nemotron-Personas-Korea**를 씁니다. 통계청, 대법원, 건강보험공단 등 실제 공공 통계를 바탕으로 AI가 만든 100만 명의 가상 한국인 프로필입니다. 한 사람마다 나이, 성별, 지역, 직업, 학력, 혼인, 가구 형태, 주거 형태와 함께 직업·가족·관심사·목표를 서술한 한국어 텍스트가 있습니다. 가상 인물이라 개인정보 문제가 없습니다.
 
-원본은 1.8GB라 그대로 쓸 수 없어서, **100만 명을 100분의 1로 줄인 1만 명**을 [personas.jsonl](personas.jsonl)에 넣어 두었습니다. 그냥 무작위로 뽑으면 수가 적은 집단(예: 강원 70대 여성)이 빠질 수 있어서, 연령대 6개 × 남녀 × 지역 5권역의 60개 칸으로 나눠 칸마다 원본 비율 그대로 뽑고 어떤 칸이든 최소 50명은 넣었습니다. 그래서 이 파일은 한국 인구 구성을 그대로 닮은 작은 한국입니다. 어떤 타깃을 넣어도 후보가 수십 명 이상 나옵니다.
+**7명은 100만 명 전체에서 찾습니다.** 클로드가 HuggingFace 데이터셋 서버 API에 기획서의 "누구" 조건을 걸어 100만 명 전체를 검색하고(예: 30~55세 남성, 프로필에 "레미콘" 또는 "건자재"), 조건에 맞는 사람들 중 무작위로 뽑습니다. 다운로드, 설치, API 키가 없습니다. 조건에 맞는 전체 인원(예: 151명)은 리포트의 선별 메모에 적힙니다.
+
+왜 전체에서 찾나: 레미콘 영업, 임업인, 묘목 생산자처럼 좁은 타깃은 표본을 줄이면 사라집니다. 100만 명에는 레미콘이 35명, 건설 자재 영업이 151명, 임업 관련이 202명 있지만 1만 명으로 줄이면 0~2명입니다. 타깃이 아닌 사람에게 물으면 당연히 안 누르고, 그 답은 페이지 문제가 아니라 사람을 잘못 데려온 것입니다.
+
+API가 안 될 때만 리포에 넣어 둔 [personas.jsonl](personas.jsonl)을 씁니다. 100만 명을 연령대·성별·권역 비율 그대로 100분의 1로 줄인 1만 명(23MB)입니다. 뽑는 방법은 [scripts/build_sample.py](scripts/build_sample.py)에 있습니다.
 
 | 항목 | 내용 |
 |---|---|
 | 제작 | NVIDIA |
 | 원본 | [huggingface.co/datasets/nvidia/Nemotron-Personas-Korea](https://huggingface.co/datasets/nvidia/Nemotron-Personas-Korea), 100만 명 |
 | 라이선스 | CC BY 4.0 |
-| 이 리포의 파일 | 10,000명 (원본의 1%), 23MB, 뽑는 방법은 [scripts/build_sample.py](scripts/build_sample.py) |
+| 검색 방식 | HuggingFace 데이터셋 서버 filter API (100만 명 전체, 키 불필요) |
+| 대체 파일 | personas.jsonl 1만 명 (API 실패 시) |
 
 ---
 
@@ -138,7 +143,7 @@ NVIDIA가 공개한 **Nemotron-Personas-Korea**를 씁니다. 통계청, 대법�
 |---|---|
 | [PROMPT.md](PROMPT.md) | 참가자가 복사하는 프롬프트 3개 |
 | [GUIDE.md](GUIDE.md) | 클로드가 읽고 따르는 진행 안내. 페르소나 고르기, 인터뷰 질문, 종합 규칙, 출력 형식 |
-| [personas.jsonl](personas.jsonl) | 가상 한국인 10,000명 (100만 명의 1%) |
+| [personas.jsonl](personas.jsonl) | 대체용 가상 한국인 1만 명. 기본은 API로 100만 명 전체 검색 |
 | [templates/report.html](templates/report.html) | REPORT.html 템플릿 |
 | [scripts/fill_report.py](scripts/fill_report.py) | report.json을 템플릿에 채워 REPORT.html을 만드는 스크립트. 클로드가 실행 |
 | [examples/gajeongtongsinmun](examples/gajeongtongsinmun) | 실행 예시. 입력(기획서, PRD, 페이지)과 출력(REPORT) |
