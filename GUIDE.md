@@ -58,32 +58,16 @@ index.html은 실제로 열어 텍스트를 위에서 아래 순서로 뽑아 �
 
 ---
 
-## 2. 페르소나 데이터
+## 2. 페르소나 데이터 준비
 
-**기본: HuggingFace 데이터셋 서버 API로 100만 명 전체에서 조건 검색한다.** 다운로드도 설치도 API 키도 없다. curl 하나면 된다. 레미콘 영업, 임업인, 묘목 생산자처럼 좁은 타깃도 100만 명 안에는 수십 명 이상 있다.
+100만 명 전체에서 찾는다. 방법은 두 단계다. 색인 파일(13MB, 100만 명의 나이·성별·지역·직업·혼인·가구)로 내 컴퓨터에서 조건 검색을 하고, 고른 후보의 전체 프로필만 HuggingFace에서 받아온다. API 키는 없다.
 
-```bash
-curl -s -G "https://datasets-server.huggingface.co/filter" \
-  --data-urlencode "dataset=nvidia/Nemotron-Personas-Korea" \
-  --data-urlencode "config=default" --data-urlencode "split=train" \
-  --data-urlencode "where=\"age\">=30 AND \"age\"<=55 AND \"sex\"='남자' AND (\"professional_persona\" LIKE '%레미콘%' OR \"professional_persona\" LIKE '%건자재%')" \
-  --data-urlencode "length=100" --data-urlencode "offset=0" -o candidates.json
-```
-
-- `where`는 SQL 조건이다. 컬럼명은 큰따옴표, 문자열 값은 작은따옴표. 텍스트 검색은 LIKE로 하고 여러 키워드는 OR로 묶는다. 검색할 텍스트 컬럼: persona, professional_persona, family_persona, career_goals_and_ambitions, skills_and_expertise. 직업은 `"occupation" LIKE '%영업%'`.
-- 응답의 `num_rows_total`이 조건에 맞는 전체 인원이다. 이 숫자를 선별 메모에 적는다. 예: "100만 명 중 조건 매칭 151명".
-- 매칭이 100명을 넘으면 `offset`을 0부터 `num_rows_total - 100` 사이 난수로 주고 다시 받아 후보를 무작위로 만든다. 100명 이하면 offset 0으로 전부 받는다.
-- 첫 호출은 20초쯤 걸린다. 이후는 몇 초다. 조건을 바꿔 가며 두세 번 호출해도 된다.
-- 응답 형식: `{"rows":[{"row":{...}}], "num_rows_total": N}`. `row` 안에 모든 컬럼이 있다.
-
-**대체: API가 실패하면**(HTTP 200이 아니거나 응답에 `error`가 있으면) 리포의 1만 명 파일을 쓴다. 100만 명을 연령대·성별·권역 비율대로 100분의 1로 줄인 것이라 흔한 타깃은 찾을 수 있지만 좁은 타깃은 없을 수 있다.
+현재 폴더에 `index.tsv.gz`와 `find_personas.py`가 없으면 받는다.
 
 ```bash
-curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-customers/main/personas.jsonl \
-  || (curl -fL -o personas.jsonl.gz https://cdn.jsdelivr.net/gh/junleefc/first-7-customers@main/personas.jsonl.gz && gunzip -f personas.jsonl.gz)
+curl -fL -o index.tsv.gz https://raw.githubusercontent.com/junleefc/first-7-customers/main/index.tsv.gz
+curl -fL -o find_personas.py https://raw.githubusercontent.com/junleefc/first-7-customers/main/scripts/find_personas.py
 ```
-
-한 줄에 한 명, JSON. 필드는 `uuid, age, sex, province, district, occupation, education_level, marital_status, family_type, housing_type, persona, professional_persona, family_persona, skills_and_expertise, hobbies_and_interests, career_goals_and_ambitions`. 이 경우 선별 메모에 "API 실패로 1만 명 파일 사용"이라고 적는다.
 
 이름은 `persona` 텍스트 첫머리에 "OOO 씨"로 나온다. 그 이름을 그대로 쓴다. 새 이름을 짓지 않는다.
 
@@ -93,42 +77,36 @@ curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-cu
 
 ## 3. 7명 고르기
 
-기획서의 "누구"에서 조건을 뽑는다. 쓸 수 있는 축: 나이 범위, 성별, 직업 키워드, 지역, 가족 상황(family_type, marital_status), 자유 키워드(persona, professional_persona, family_persona 텍스트 검색).
+기획서의 "누구"에서 조건을 뽑아 `find_personas.py`를 돌린다. 쓸 수 있는 조건: 나이 범위, 성별, 지역, 직업 키워드, 혼인, 가구 형태.
 
-데이터의 한계를 먼저 알고 조건을 세운다.
-- **자녀 나이와 학년은 프로필에 거의 없다.** "초등 2학년 자녀"는 family_type에 "자녀"가 있고 부모 나이가 30~45세인 사람으로 대체한다. 학년은 모르는 채로 둔다.
-- **배우자가 일하는지는 알 수 없다.** "맞벌이"는 "일하는 부모"로 읽는다. 아빠 페르소나도 뽑는다.
-- **과거 사건 기록이 없다.** "언제 겪었나"는 물을 수 없다. 생활 패턴에서 그 불편이 생길 상황이 있는지를 본다.
-- 자유 키워드는 여러 개를 OR로 건다. 예: 부모 타깃이면 아이, 자녀, 학교, 학부모, 워킹맘, 맞벌이. 업종 타깃이면 그 업종의 동의어를 함께 건다. 예: 레미콘, 건자재, 건설 자재, 시멘트.
-
-- 타깃 5명: 조건에 맞는 사람. 후보를 python으로 걸러 30명 안팎을 뽑고, 그중 직업·지역·가족 상황이 서로 다르게 5명을 고른다.
-- 근처 2명: 한 축만 일부러 벗어난 사람. 예를 들어 나이가 타깃보다 10살 위거나 아래, 또는 직업이 다르지만 같은 불편을 겪을 법한 사람. 이 2명은 "나 말고 이 불편을 겪는 사람이 있나"를 확인하는 용도다.
-
-조건 매칭이 20명 이상 나와야 한다. 5명 미만이면 조건을 하나씩 푼다. 타깃 직업이 드물면 직업 키워드는 유지하고 지역과 나이부터 푼다. 직업이 다른 사람을 타깃 5명에 넣지 않는다. 그런 사람은 근처 2명으로만 쓴다. 푸는 순서: 지역 → 직업 키워드 → 자유 키워드 넓히기 → 나이 범위 넓히기. 어떤 조건을 어떻게 풀었는지 "선별 메모" 두 줄로 남긴다. 이 메모는 채팅과 REPORT.md 둘 다에 들어간다.
-
-python 예시 (그대로 쓰지 말고 조건에 맞게 바꾼다):
-
-```python
-import json, random, subprocess, urllib.parse
-where = ('"age">=30 AND "age"<=55 AND "sex"=\'남자\' AND ('
-         '"professional_persona" LIKE \'%레미콘%\' OR "professional_persona" LIKE \'%건자재%\' OR '
-         '"professional_persona" LIKE \'%건설 자재%\' OR "professional_persona" LIKE \'%시멘트%\')')
-base = "https://datasets-server.huggingface.co/filter?" + urllib.parse.urlencode(
-    {"dataset": "nvidia/Nemotron-Personas-Korea", "config": "default", "split": "train", "where": where})
-def fetch(offset, length=100):
-    out = subprocess.run(["curl", "-s", f"{base}&offset={offset}&length={length}"], capture_output=True, text=True).stdout
-    return json.loads(out)
-first = fetch(0, 1)
-total = first["num_rows_total"]
-random.seed()
-d = fetch(random.randint(0, max(0, total - 100)) if total > 100 else 0)
-cand = [r["row"] for r in d["rows"]]
-print("100만 명 중 조건 매칭", total, "명 / 후보", len(cand), "명")
-for r in cand[:30]:
-    print(r["age"], r["sex"], r["district"], r["occupation"], "|", r["persona"][:60])
+```bash
+python3 find_personas.py --age 30-55 --sex 남자 --occupation 자재,레미콘,시멘트,콘크리트 --occupation-all 영업 --region 경기,서울,인천 --n 40
 ```
 
-대체 파일을 쓸 때는 `rows = [json.loads(l) for l in open("personas.jsonl", encoding="utf-8")]`로 읽고 같은 조건을 python으로 건다.
+- `--occupation`은 쉼표로 여러 개를 OR로 건다. 직업은 2,120종으로 세분돼 있다(예: 건축자재 영업원, 초등학교 교사, 온라인 쇼핑 판매원, 임업 종사자). 업종 타깃이면 동의어를 함께 건다.
+- `--occupation-all`은 반드시 들어가야 하는 글자(AND). 예: `--occupation-all 영업`.
+- `--family 자녀`는 가구 형태에 자녀가 있는 사람. `--marital 배우자있음`.
+- 화면에 "100만 명 중 조건 매칭 N명"이 나오고, 그중 무작위 40명의 전체 프로필이 `candidates.json`에 저장된다. 40명 받는 데 1분쯤 걸린다.
+- `candidates.json` 형식: `{"matched_total": N, "fetched": 40, "candidates": [ {...전체 프로필...} ]}`.
+
+데이터의 한계를 알고 조건을 세운다.
+- **자녀 나이와 학년은 프로필에 거의 없다.** "초등 2학년 자녀"는 `--family 자녀 --age 30-45`로 대체한다. 학년은 모르는 채로 둔다.
+- **배우자가 일하는지는 알 수 없다.** "맞벌이"는 "일하는 부모"로 읽는다. 아빠 페르소나도 뽑는다.
+- **과거 사건 기록이 없다.** "언제 겪었나"는 물을 수 없다. 생활 패턴에서 그 불편이 생길 상황이 있는지를 본다.
+- 색인에는 직업만 있고 프로필 본문은 없다. "퇴사 준비", "워킹맘" 같은 상황 키워드는 40명을 받은 뒤 `persona`, `professional_persona`, `family_persona`, `career_goals_and_ambitions` 텍스트에서 python으로 거른다.
+
+**매칭이 20명 미만이면** 조건을 하나씩 푼다. 푸는 순서: 지역 → 나이 범위 → 혼인·가구 → 직업 동의어 추가. **타깃 직업은 끝까지 지킨다.** 직업이 다른 사람을 타깃 5명에 넣지 않는다. 그런 사람은 근처 2명으로만 쓴다. 어떤 조건을 어떻게 풀었는지 "선별 메모" 두 줄로 남긴다. 이 메모는 채팅과 REPORT.md 둘 다에 들어간다.
+
+**find_personas.py가 프로필을 못 받으면**(HuggingFace 접속 실패) 대체 파일을 받아 같은 조건으로 python으로 거른다. 이 파일은 100만 명을 인구 비율대로 100분의 1로 줄인 1만 명이라 좁은 타깃은 없을 수 있다. 선별 메모에 "API 실패로 1만 명 파일 사용"이라고 적는다.
+
+```bash
+curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-customers/main/personas.jsonl \
+  || (curl -fL -o personas.jsonl.gz https://cdn.jsdelivr.net/gh/junleefc/first-7-customers@main/personas.jsonl.gz && gunzip -f personas.jsonl.gz)
+```
+
+40명 후보에서 고른다.
+- 타깃 5명: 조건에 맞는 사람. 직업·지역·가족 상황이 서로 다르게 5명.
+- 근처 2명: 한 축만 일부러 벗어난 사람. 나이가 타깃보다 10살 위거나 아래, 또는 직업이 다르지만 같은 불편을 겪을 법한 사람. `find_personas.py`를 조건을 바꿔 한 번 더 돌려 받아도 된다(`--out near.json`). 이 2명은 "나 말고 이 불편을 겪는 사람이 있나"를 확인하는 용도다.
 
 고른 7명을 아래 표로 사용자에게 보여준 뒤 인터뷰로 넘어간다. 사용자 승인을 기다리지 않는다.
 
@@ -208,7 +186,7 @@ curl -fL -o fill_report.py https://raw.githubusercontent.com/junleefc/first-7-cu
 python3 fill_report.py report.json report-template.html REPORT.html
 ```
 
-"saved REPORT.html"이 나오면 된 것이다. "채워지지 않은 자리"가 나오면 report.json에서 그 키를 채우고 다시 실행한다. 끝나면 `report-template.html`과 `fill_report.py`는 지운다. `report.json`은 둔다.
+"saved REPORT.html"이 나오면 된 것이다. "채워지지 않은 자리"가 나오면 report.json에서 그 키를 채우고 다시 실행한다. 끝나면 `report-template.html`, `fill_report.py`, `find_personas.py`는 지운다. `report.json`, `candidates.json`, `index.tsv.gz`는 둔다(다시 돌릴 때 쓴다).
 
 저장이 끝나면 REPORT.html을 브라우저로 연다(macOS `open REPORT.html`, Windows `start REPORT.html`). 그리고 사용자에게 이렇게 마무리한다.
 
