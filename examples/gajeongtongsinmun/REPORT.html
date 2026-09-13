@@ -1,0 +1,240 @@
+~ <!-- CARD END --> 블록을 7번 복제해 채운다.
+3. 카드의 data-verdict 값은 yes / no / maybe 중 하나. 뱃지 글자는 누른다 / 안 누른다 / 모르겠다.
+4. 카드의 data-kind 값은 target / near 중 하나. 라벨 글자는 타깃 / 근처.
+5. 3 2 2 은 정수. 합이 7.
+6. 김병철이 신청 항목에서 멈췄다. &quot;카톡으로 보내 준다면서 카톡 번호는 안 받고 이메일을 받는다.&quot; 이메일 항목을 빼고 이름, 아이 학년, 카톡 받을 전화번호로 바꾸거나, 이메일을 왜 받는지 한 줄을 적어라. 는 신청 항목이 걸림돌로 나오지 않았으면 그 <section id="form"> 블록을 통째로 지운다.
+7. 이모지, em-dash 없이 채운다.
+-->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>첫 손님 7명 · 가정통신문 정리 서비스</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --ink:#1F2933; --sub:#5A636D; --line:#E6DCC8; --paper:#FBF7EE; --card:#FFFFFF;
+    --main:#9A5427; --main-soft:#F3E4D6; --ok:#0F766E; --ok-soft:#DDF0EC; --no:#B42318; --no-soft:#F8E1DE; --maybe:#A6721E; --maybe-soft:#F7ECD6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.6;font-size:16px}
+  .wrap{max-width:860px;margin:0 auto;padding:40px 20px 80px}
+  header{margin-bottom:32px}
+  .eyebrow{font-size:13px;color:var(--sub);letter-spacing:.02em;margin-bottom:6px}
+  h1{font-size:28px;line-height:1.3;margin:0 0 6px;font-weight:700}
+  .meta{font-size:14px;color:var(--sub)}
+  h2{font-size:18px;margin:36px 0 12px;font-weight:700;color:var(--main)}
+  .hero{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+  .hero .big{font-size:22px;font-weight:700;margin:0 0 14px}
+  .bar{display:flex;height:14px;border-radius:7px;overflow:hidden;border:1px solid var(--line);margin:6px 0 8px}
+  .bar span{display:block;height:100%}
+  .bar .y{background:var(--ok)} .bar .m{background:var(--maybe)} .bar .n{background:var(--no)}
+  .legend{display:flex;gap:16px;font-size:13px;color:var(--sub);flex-wrap:wrap}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
+  .kv{display:grid;grid-template-columns:120px 1fr;gap:8px 14px;margin-top:18px;font-size:15px}
+  .kv dt{color:var(--sub);font-weight:600}
+  .kv dd{margin:0}
+  .quote{border-left:3px solid var(--line);padding:6px 12px;margin:6px 0;color:var(--sub);background:#FAFAF7;border-radius:0 6px 6px 0}
+  .quote.new{border-color:var(--main);color:var(--ink);background:var(--main-soft)}
+  .note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;font-size:15px}
+  .cards{display:flex;flex-direction:column;gap:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .who{font-weight:700;font-size:16px}
+  .who small{display:block;font-weight:400;color:var(--sub);font-size:13px;margin-top:2px}
+  .badges{display:flex;gap:6px;flex-shrink:0}
+  .badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .card[data-verdict="yes"] .verdict{background:var(--ok-soft);color:var(--ok)}
+  .card[data-verdict="no"] .verdict{background:var(--no-soft);color:var(--no)}
+  .card[data-verdict="maybe"] .verdict{background:var(--maybe-soft);color:var(--maybe)}
+  .kind{background:#EEE9DF;color:var(--sub)}
+  .card[data-kind="near"] .kind{background:var(--main-soft);color:var(--main)}
+  .stop{font-size:14px;color:var(--sub);margin-bottom:10px}
+  .stop b{color:var(--ink)}
+  .qa{display:grid;grid-template-columns:72px 1fr;gap:6px 12px;font-size:14.5px;margin:0}
+  .qa dt{color:var(--sub);font-weight:600}
+  .qa dd{margin:0}
+  .fix{margin-top:12px;padding:10px 14px;background:var(--main-soft);border-radius:8px;font-size:14.5px}
+  .fix b{color:var(--main)}
+  ol.q{padding-left:20px;margin:0}
+  ol.q li{margin:6px 0}
+  footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:14px}
+  @media (max-width:600px){ .kv{grid-template-columns:1fr} .qa{grid-template-columns:1fr} h1{font-size:23px} .hero .big{font-size:19px} }
+  @media print{ body{background:#fff} .card,.hero,.note{break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">첫 손님 7명 · 가상 한국인이 내 페이지를 읽었습니다</div>
+  <h1>가정통신문 정리 서비스</h1>
+  <div class="meta">2026-09-13 · 기획서 기획서.md · 페이지 index.html</div>
+</header>
+
+<section class="hero">
+  <p class="big">7명 중 3명이 신청 버튼을 누릅니다.</p>
+  <div class="bar" aria-label="누른다 3, 모르겠다 2, 안 누른다 2">
+    <span class="y" style="width:calc(3 / 7 * 100%)"></span>
+    <span class="m" style="width:calc(2 / 7 * 100%)"></span>
+    <span class="n" style="width:calc(2 / 7 * 100%)"></span>
+  </div>
+  <div class="legend">
+    <span><i style="background:var(--ok)"></i>누른다 3</span>
+    <span><i style="background:var(--maybe)"></i>모르겠다 2</span>
+    <span><i style="background:var(--no)"></i>안 누른다 2</span>
+  </div>
+  <dl class="kv">
+    <dt>가장 많이 걸린 곳</dt><dd><b>첫 화면</b> · 안 누른 2명이 모두 여기서 멈췄다. &quot;준비물을 놓친 적이 없다&quot;, &quot;아직 통신문이 안 온다&quot;. 모르겠다 2명은 무료 제안, 신청 항목에서 각각 멈췄다.</dd>
+    <dt>바꿀 문장</dt>
+    <dd>
+      <div class="quote">지금: 퇴근하고 통신문 읽다가, 내일 준비물을 또 놓치셨나요?</div>
+      <div class="quote new">제안: 매주 서너 장씩 오는 가정통신문, 퇴근 후에 일정과 준비물만 골라서 보세요.</div>
+    </dd>
+    <dt>근처 2명이 말해 주는 것</dt><dd>자녀가 미취학인 장수정은 안 눌렀고, 혼자 챙기는 아빠 한용진은 눌렀다. 타깃을 &quot;맞벌이 엄마&quot;로 좁히지 말고 &quot;혼자 챙기는 부모&quot;까지 넓혀도 된다. 미취학 쪽으로는 넓힐 필요 없다.</dd>
+  </dl>
+</section>
+
+<section id="form">
+  <h2>신청 항목</h2>
+  <div class="note">김병철이 신청 항목에서 멈췄다. &quot;카톡으로 보내 준다면서 카톡 번호는 안 받고 이메일을 받는다.&quot; 이메일 항목을 빼고 이름, 아이 학년, 카톡 받을 전화번호로 바꾸거나, 이메일을 왜 받는지 한 줄을 적어라.</div>
+</section>
+
+<h2>7명의 답</h2>
+<div class="cards">
+
+
+<article class="card" data-verdict="yes" data-kind="target">
+  <div class="card-head">
+    <div class="who">P1 · 박선미 <small>37세 여자 · 용인시 수지구 · 정보 시스템 운영자 · 배우자·자녀와 거주</small></div>
+    <div class="badges"><span class="badge kind">타깃</span><span class="badge verdict">누른다</span></div>
+  </div>
+  <div class="stop">멈춘 곳: <b>없음 (누른다)</b></div>
+  <dl class="qa">
+    <dt>불편</dt><dd>맞벌이라 퇴근 후 저녁 시간을 지키는 게 제 목표예요. 통신문을 몇 장 받는지, 마지막으로 놓친 게 언제인지는 프로필로 알 수 없어요. 아이 학년도 알 수 없어요.</dd>
+    <dt>지금 방법</dt><dd>프로필로 알 수 없어요. 다만 회사에서 반복 확인 업무는 스크립트로 자동화해서 정시 퇴근하는 사람이라, 집에서도 반복 확인은 줄이고 싶어요.</dd>
+    <dt>차이</dt><dd>전날 저녁 카톡 하나로 온다는 건 의미 있어요. 확인 업무를 맡겨 버리는 거라 제 방식이에요.</dd>
+    <dt>가격</dt><dd>4,900원은 낼 만해요. 비슷한 걸 돈 내고 쓰는지는 프로필로 알 수 없어요.</dd>
+    <dt>페이지</dt><dd>누른다. 걸린 것: &quot;통신문 사진만 보내 주세요&quot;라는데 어디로 보내는지 페이지에 없어요.</dd>
+  </dl>
+  <div class="fix"><b>이렇게 바뀌면 누른다:</b> "사진을 카톡 어디로 보내는지 딱 한 줄만 적어 주세요."</div>
+</article>
+
+<article class="card" data-verdict="maybe" data-kind="target">
+  <div class="card-head">
+    <div class="who">P2 · 원순자 <small>45세 여자 · 화성시 동탄 · 제빵사 · 배우자·자녀와 거주</small></div>
+    <div class="badges"><span class="badge kind">타깃</span><span class="badge verdict">모르겠다</span></div>
+  </div>
+  <div class="stop">멈춘 곳: <b>무료 제안</b></div>
+  <dl class="qa">
+    <dt>불편</dt><dd>있어요. 새벽 5시에 빵집에 나가니까 아침에 준비물을 챙겨 줄 사람이 없어요. 마지막으로 놓친 게 언제인지, 아이들이 몇 학년인지는 프로필로 알 수 없어요.</dd>
+    <dt>지금 방법</dt><dd>단지 학부모들 사이에서 믿음직한 엄마로 통하니 물어볼 사람은 있어요. 단톡방을 쓰는지는 알 수 없어요. 말수가 적은 편이라 묻는 것 자체가 편하진 않아요.</dd>
+    <dt>차이</dt><dd>아침이 아니라 전날 저녁에 온다는 게 저한테는 핵심이에요. 새벽에 나가는 사람한테는 그게 차이예요.</dd>
+    <dt>가격</dt><dd>월급으로 전세 자금 늘리는 데 집중하는 사람이라 4,900원도 따져 봐요. 학교 알림 앱 유료를 쓰는지는 알 수 없어요.</dd>
+    <dt>페이지</dt><dd>모르겠다. 3장을 하루 안에 정리해 준다는데, 그 다음 매주 오는 건 어떻게 되고 얼마인지 페이지에 없어요.</dd>
+  </dl>
+  <div class="fix"><b>이렇게 바뀌면 누른다:</b> "무료 3장 다음엔 어떻게 되고 얼마인지 적혀 있으면 눌러요."</div>
+</article>
+
+<article class="card" data-verdict="no" data-kind="target">
+  <div class="card-head">
+    <div class="who">P3 · 이예원 <small>35세 여자 · 대구 북구 · 뷰티숍 관리자 · 배우자·자녀와 거주</small></div>
+    <div class="badges"><span class="badge kind">타깃</span><span class="badge verdict">안 누른다</span></div>
+  </div>
+  <div class="stop">멈춘 곳: <b>첫 화면</b></div>
+  <dl class="qa">
+    <dt>불편</dt><dd>없어요. 아이 학원 스케줄이랑 준비물은 제가 완벽하게 챙기고, 거기서 보람을 느껴요. 놓치는 편이 아니에요.</dd>
+    <dt>지금 방법</dt><dd>매장에서 손님 요구를 수첩에 적어 두듯 집에서도 제가 직접 챙겨요. 귀찮다기보다 제 역할이에요.</dd>
+    <dt>차이</dt><dd>남이 골라 주는 건 저한테는 차이가 아니에요. 제가 보는 게 더 빨라요.</dd>
+    <dt>가격</dt><dd>안 내요. 제가 하는 일에 돈 낼 이유가 없어요.</dd>
+    <dt>페이지</dt><dd>안 누른다. &quot;또 놓치셨나요&quot;가 제 얘기가 아니에요.</dd>
+  </dl>
+  <div class="fix"><b>이렇게 바뀌면 누른다:</b> "놓친 사람 말고, 매주 정리하는 시간이 아까운 사람한테도 말을 걸어 주면 한 번은 볼게요."</div>
+</article>
+
+<article class="card" data-verdict="maybe" data-kind="target">
+  <div class="card-head">
+    <div class="who">P4 · 김병철 <small>45세 남자 · 파주시 · 휴대폰 매장 판매원 · 배우자·자녀와 거주</small></div>
+    <div class="badges"><span class="badge kind">타깃</span><span class="badge verdict">모르겠다</span></div>
+  </div>
+  <div class="stop">멈춘 곳: <b>신청 항목 (이메일)</b></div>
+  <dl class="qa">
+    <dt>불편</dt><dd>준비물은 제가 챙기는 편이라 놓쳐서 곤란했던 기억은 프로필로 알 수 없습니다. 아이들 학년도 알 수 없어요.</dd>
+    <dt>지금 방법</dt><dd>제가 직접 챙깁니다. 말이 서툴러서 그게 제 표현 방식이라 귀찮진 않아요. 아내가 일을 하는지는 프로필로 알 수 없습니다.</dd>
+    <dt>차이</dt><dd>전날 저녁 카톡은 편하긴 하겠죠. 근데 단톡방 얘기는 저랑 상관없습니다.</dd>
+    <dt>가격</dt><dd>전세 자금 모으는 중이라 월 구독은 따집니다. 4,900원이 통신 부가서비스 하나 값이라는 건 압니다.</dd>
+    <dt>페이지</dt><dd>모르겠다. 카톡으로 보내 준다면서 카톡 번호는 안 받고 이메일을 받네요. 계약서 작은 글씨 보는 사람이라 이런 게 걸립니다. 누가 운영하는지도 없고요.</dd>
+  </dl>
+  <div class="fix"><b>이렇게 바뀌면 누른다:</b> "카톡으로 준다면 전화번호를 받든가, 이메일을 왜 받는지 한 줄 적어 주세요."</div>
+</article>
+
+<article class="card" data-verdict="yes" data-kind="target">
+  <div class="card-head">
+    <div class="who">P5 · 백우리 <small>39세 여자 · 서울 동작구 · 영업 관리 사무원 · 배우자·자녀와 거주</small></div>
+    <div class="badges"><span class="badge kind">타깃</span><span class="badge verdict">누른다</span></div>
+  </div>
+  <div class="stop">멈춘 곳: <b>없음 (누른다)</b></div>
+  <dl class="qa">
+    <dt>불편</dt><dd>있어요. 퇴근하면 설거지랑 빨래를 끝내야 하루가 끝나는데, 통신문은 그 뒤에 봐요. 마지막으로 놓친 게 언제인지, 아이 학년은 프로필로 알 수 없어요.</dd>
+    <dt>지금 방법</dt><dd>프로필로 알 수 없어요. 오타 하나 못 넘기는 성격이라 통신문도 끝까지 읽긴 읽는데, 그게 밤이 돼요.</dd>
+    <dt>차이</dt><dd>골라서 준다는 게 의미 있어요. 읽는 시간이 줄어드니까요.</dd>
+    <dt>가격</dt><dd>4,900원 낼 수 있어요. 실수 없는 루틴에 돈 쓰는 건 안 아까워요. 비슷한 걸 쓰는지는 알 수 없어요.</dd>
+    <dt>페이지</dt><dd>누른다. 걸린 것: &quot;전날 저녁&quot;이 몇 시인지요. 설거지 전인지 후인지.</dd>
+  </dl>
+  <div class="fix"><b>이렇게 바뀌면 누른다:</b> "전날 저녁 몇 시에 오는지 적혀 있으면 마음 놓고 누르죠."</div>
+</article>
+
+<article class="card" data-verdict="no" data-kind="near">
+  <div class="card-head">
+    <div class="who">P6 · 장수정 <small>35세 여자 · 안양시 동안구 · 식품 영업원 · 배우자·자녀와 거주 (아이 초등 입학 전)</small></div>
+    <div class="badges"><span class="badge kind">근처</span><span class="badge verdict">안 누른다</span></div>
+  </div>
+  <div class="stop">멈춘 곳: <b>첫 화면</b></div>
+  <dl class="qa">
+    <dt>불편</dt><dd>아직 없어요. 아이가 초등학교 입학 전이라 가정통신문이 안 와요.</dd>
+    <dt>지금 방법</dt><dd>해당 없어요. 지금은 안양, 의왕 거래처 배송 경로 짜느라 바빠요.</dd>
+    <dt>차이</dt><dd>입학하면 의미 있을 것 같아요. 그때는 팀장 돼서 등하교를 직접 챙기려는데, 그래도 통신문은 남으니까요.</dd>
+    <dt>가격</dt><dd>지금은 안 내요. 입학 후엔 생각해 볼게요.</dd>
+    <dt>페이지</dt><dd>안 누른다. 통신문 자체가 없어요.</dd>
+  </dl>
+  <div class="fix"><b>이렇게 바뀌면 누른다:</b> "입학 전 부모도 미리 신청해 두면 3월에 알려 준다고 하면 눌러 둘게요."</div>
+</article>
+
+<article class="card" data-verdict="yes" data-kind="near">
+  <div class="card-head">
+    <div class="who">P7 · 한용진 <small>37세 남자 · 창원시 진해구 · 금속·재료 공학 기술자 · 자녀와 거주 (배우자 별거)</small></div>
+    <div class="badges"><span class="badge kind">근처</span><span class="badge verdict">누른다</span></div>
+  </div>
+  <div class="stop">멈춘 곳: <b>없음 (누른다)</b></div>
+  <dl class="qa">
+    <dt>불편</dt><dd>있습니다. 혼자 챙기니까 통신문 읽는 것도 저 혼자예요. 마지막으로 놓친 게 언제인지는 프로필로 알 수 없어요.</dd>
+    <dt>지금 방법</dt><dd>하굣길에 아이한테 직접 물어봅니다. 엄마들 단톡방 같은 건 저한테 없어요. 물어볼 데가 없는 게 제일 귀찮습니다.</dd>
+    <dt>차이</dt><dd>단톡방 안 물어봐도 된다는 건 저한테는 &quot;물어볼 데가 생긴다&quot;는 뜻이라 의미 있어요.</dd>
+    <dt>가격</dt><dd>4,900원 냅니다. 치킨집 생맥주 한 잔 값이에요. 기술사 공부할 시간이 필요합니다.</dd>
+    <dt>페이지</dt><dd>누른다. 걸린 것: 페이지 전체가 엄마 얘기 같아요. 아빠 혼자도 되는지요.</dd>
+  </dl>
+  <div class="fix"><b>이렇게 바뀌면 누른다:</b> "혼자 키우는 아빠도 쓰는 거라고 한 줄만 있으면 더 빨리 눌러요."</div>
+</article>
+
+
+</div>
+
+<h2>이건 가설입니다</h2>
+<div class="note">
+  <p style="margin:0 0 10px">가상 고객 7명의 답은 통계 프로필로 만든 추정입니다. 실제 사람 3명에게 아래 세 가지를 물어보고 확인하세요.</p>
+  <ol class="q">
+    <li>지난 한 달 안에 아이 준비물을 놓친 적이 실제로 있었나요? 그때 어떻게 해결했나요?</li>
+    <li>통신문 사진을 어디로 보내면 편할까요? 신청할 때 이메일 대신 무엇을 받으면 될까요?</li>
+    <li>학교 알림 앱 유료(월 3,900원) 대신 월 4,900원을 낼 건가요? 어떤 조건이면 내나요?</li>
+  </ol>
+</div>
+
+<footer>
+  페르소나 데이터: NVIDIA Nemotron-Personas-Korea (CC BY 4.0) 중 5,000명 샘플. 모든 인물은 AI가 만든 가상 인물입니다. ·
+  도구: <a href="https://github.com/junleefc/first-7-customers" style="color:var(--main)">first-7-customers</a>
+</footer>
+
+</div>
+</body>
+</html>
