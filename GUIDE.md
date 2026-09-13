@@ -164,11 +164,11 @@ for r in cand[:30]:
 **REPORT.html** : 아래 템플릿을 받아 채운다. 템플릿 안의 `{{ }}` 자리를 전부 채우고, 카드는 7개를 만든다. 템플릿의 CSS와 구조는 바꾸지 않는다.
 
 ```bash
-curl -fL -o /tmp/report-template.html https://raw.githubusercontent.com/junleefc/first-7-customers/main/templates/report.html \
-  || curl -fL -o /tmp/report-template.html https://cdn.jsdelivr.net/gh/junleefc/first-7-customers@main/templates/report.html
+curl -fL -o report-template.html https://raw.githubusercontent.com/junleefc/first-7-customers/main/templates/report.html \
+  || curl -fL -o report-template.html https://cdn.jsdelivr.net/gh/junleefc/first-7-customers@main/templates/report.html
 ```
 
-템플릿의 치환 규칙은 템플릿 파일 맨 위 주석에 있다. 손으로 치환하지 말고 python으로 한다. 답변 텍스트는 `html.escape`로 넣는다(큰따옴표, `<`, `&`가 카드를 깨뜨린다).
+템플릿의 치환 규칙은 템플릿 파일 맨 위 주석에 있다. 카드 헤더의 지역은 district 값의 하이픈을 공백으로 바꿔 쓴다. REPORT.html을 저장한 뒤 report-template.html은 지운다. 손으로 치환하지 말고 python으로 한다. 답변 텍스트는 `html.escape`로 넣는다(큰따옴표, `<`, `&`가 카드를 깨뜨린다).
 
 저장이 끝나면 REPORT.html을 브라우저로 연다(macOS `open REPORT.html`, Windows `start REPORT.html`). 그리고 사용자에게 이렇게 마무리한다.
 
