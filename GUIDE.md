@@ -165,14 +165,30 @@ for r in cand[:30]:
 
 사용자가 다음에 "REPORT.md를 반영해서 고쳐줘"라고 할 때 클로드가 다시 읽는 파일이다. 종합 3번의 "현재 문장"은 index.html에 있는 그대로 정확히 인용한다.
 
-**REPORT.html** : 아래 템플릿을 받아 채운다. 템플릿 안의 `{{ }}` 자리를 전부 채우고, 카드는 7개를 만든다. 템플릿의 CSS와 구조는 바꾸지 않는다.
+**REPORT.html** : 손으로 HTML을 만들지 않는다. `report.json`을 쓰고 스크립트로 만든다.
+
+1. 템플릿과 스크립트를 받는다.
 
 ```bash
-curl -fL -o report-template.html https://raw.githubusercontent.com/junleefc/first-7-customers/main/templates/report.html \
-  || curl -fL -o report-template.html https://cdn.jsdelivr.net/gh/junleefc/first-7-customers@main/templates/report.html
+curl -fL -o report-template.html https://raw.githubusercontent.com/junleefc/first-7-customers/main/templates/report.html
+curl -fL -o fill_report.py https://raw.githubusercontent.com/junleefc/first-7-customers/main/scripts/fill_report.py
 ```
 
-템플릿의 치환 규칙은 템플릿 파일 맨 위 주석에 있다. 카드 헤더의 지역은 district 값의 하이픈을 공백으로 바꿔 쓴다. REPORT.html을 저장한 뒤 report-template.html은 지운다. 손으로 치환하지 말고 python으로 한다. 답변 텍스트는 `html.escape`로 넣는다(큰따옴표, `<`, `&`가 카드를 깨뜨린다).
+2. 현재 폴더에 `report.json`을 쓴다. 형식은 `fill_report.py` 맨 위 주석에 있다. 요약하면:
+   - `project_name, date, brief_file, page_file`
+   - `stop_section`(첫 화면 / 차이 / 무료 제안 / 신청 항목), `stop_why`, `current_sentence`(index.html 원문 그대로), `proposed_sentence`
+   - `form_note`(신청 항목 지적. 없으면 `null`), `near_insight`
+   - `personas` 7명: `name, age, sex, district, occupation, kind(target|near), verdict(yes|no|maybe), stop(첫 화면|차이|무료 제안|신청 항목|없음), a1~a5, fix`
+   - `real_questions` 3개
+   - 누른다/모르겠다/안 누른다 수는 스크립트가 personas에서 센다. 따로 쓰지 않는다.
+
+3. 실행한다.
+
+```bash
+python3 fill_report.py report.json report-template.html REPORT.html
+```
+
+"saved REPORT.html"이 나오면 된 것이다. "채워지지 않은 자리"가 나오면 report.json에서 그 키를 채우고 다시 실행한다. 끝나면 `report-template.html`과 `fill_report.py`는 지운다. `report.json`은 둔다.
 
 저장이 끝나면 REPORT.html을 브라우저로 연다(macOS `open REPORT.html`, Windows `start REPORT.html`). 그리고 사용자에게 이렇게 마무리한다.
 

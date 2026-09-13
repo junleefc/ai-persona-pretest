@@ -116,6 +116,7 @@ NVIDIA가 공개한 **Nemotron-Personas-Korea**를 씁니다. 통계청, 대법�
 | [GUIDE.md](GUIDE.md) | 클로드가 읽고 따르는 진행 안내. 페르소나 고르기, 인터뷰 질문, 종합 규칙, 출력 형식 |
 | [personas.jsonl](personas.jsonl) | 가상 한국인 10,000명 (100만 명의 1%) |
 | [templates/report.html](templates/report.html) | REPORT.html 템플릿 |
+| [scripts/fill_report.py](scripts/fill_report.py) | report.json을 템플릿에 채워 REPORT.html을 만드는 스크립트. 클로드가 실행 |
 | [examples/gajeongtongsinmun](examples/gajeongtongsinmun) | 실행 예시. 입력(기획서, PRD, 페이지)과 출력(REPORT) |
 | [LICENSE-DATA.md](LICENSE-DATA.md) | 데이터 출처 표기 |
 

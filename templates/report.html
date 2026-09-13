@@ -1,16 +1,3 @@
-<!--
-REPORT 템플릿 · 치환 규칙 (클로드용)
-
-1. {{ }} 자리를 전부 채운다. CSS와 구조는 바꾸지 않는다. 채운 뒤 이 주석 블록은 지운다.
-2. 페르소나 카드는 CARD START 주석부터 CARD END 주석까지의 article 블록을 7번 복제해 채운다. 복제 후 CARD START / CARD END 주석은 지운다.
-3. 카드의 data-verdict 값은 yes / no / maybe 중 하나. {{VERDICT_LABEL}} 글자는 누른다 / 안 누른다 / 모르겠다.
-4. 카드의 data-kind 값은 target / near 중 하나. {{KIND_LABEL}} 글자는 타깃 / 근처.
-5. {{STOP}} 값은 첫 화면 / 차이 / 무료 제안 / 신청 항목 / 없음 중 하나. 누른 사람은 없음.
-6. {{YES_N}} {{MAYBE_N}} {{NO_N}} 은 단위 없는 정수(예: 3). 합이 7. 같은 자리가 CSS width와 aria-label 안에도 있어서 "3명"처럼 쓰면 막대가 깨진다.
-7. 신청 항목이 걸림돌로 나왔으면 section id="form" 블록을 그대로 두고 {{FORM_NOTE}}를 채운다. 안 나왔으면 그 section 블록을 통째로 지운다.
-8. {{DISTRICT}}는 district 값의 하이픈을 공백으로 바꾼다(경기-용인시 수지구는 경기 용인시 수지구로). {{FAMILY}}는 family_type 원문 그대로.
-9. 모든 텍스트 값은 python html.escape로 넣는다. 이모지, em-dash 없이 채운다.
--->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -20,103 +7,157 @@ REPORT 템플릿 · 치환 규칙 (클로드용)
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   :root{
-    --ink:#1F2933; --sub:#5A636D; --line:#E6DCC8; --paper:#FBF7EE; --card:#FFFFFF;
-    --main:#9A5427; --main-soft:#F3E4D6; --ok:#0F766E; --ok-soft:#DDF0EC; --no:#B42318; --no-soft:#F8E1DE; --maybe:#A6721E; --maybe-soft:#F7ECD6;
+    --ink:#17202A; --ink2:#3D4852; --sub:#6B7580; --line:#E5E1D8; --bg:#F6F4EF; --card:#FFFFFF;
+    --main:#9A5427; --main-soft:#F5EBE2;
+    --ok:#0F766E; --ok-soft:#E3F1EE; --no:#B3261E; --no-soft:#F8E4E2; --maybe:#B7791F; --maybe-soft:#F8EEDC;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.6;font-size:16px}
-  .wrap{max-width:860px;margin:0 auto;padding:40px 20px 80px}
-  header{margin-bottom:32px}
-  .eyebrow{font-size:13px;color:var(--sub);letter-spacing:.02em;margin-bottom:6px}
-  h1{font-size:28px;line-height:1.3;margin:0 0 6px;font-weight:700}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.65;font-size:16px;word-break:keep-all}
+  .wrap{max-width:960px;margin:0 auto;padding:56px 24px 96px}
+  a{color:var(--main)}
+
+  .eyebrow{font-size:13px;font-weight:700;color:var(--main);letter-spacing:.06em;margin-bottom:10px}
+  h1{font-size:34px;line-height:1.25;margin:0 0 8px;font-weight:800;letter-spacing:-.01em}
   .meta{font-size:14px;color:var(--sub)}
-  h2{font-size:18px;margin:36px 0 12px;font-weight:700;color:var(--main)}
-  .hero{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
-  .hero .big{font-size:22px;font-weight:700;margin:0 0 14px}
-  .bar{display:flex;height:14px;border-radius:7px;overflow:hidden;border:1px solid var(--line);margin:6px 0 8px}
+
+  .sec{margin-top:56px}
+  .sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+  .sec-h h2{font-size:14px;font-weight:700;color:var(--main);letter-spacing:.06em;margin:0}
+  .sec-h span{font-size:14px;color:var(--sub)}
+
+  .hero{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:36px 40px;margin-top:36px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .hero-top{display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
+  .bignum{font-size:88px;line-height:1;font-weight:800;letter-spacing:-.04em;color:var(--ok)}
+  .bignum small{font-size:28px;color:var(--sub);font-weight:600;letter-spacing:0;margin-left:6px}
+  .hero-top p{font-size:22px;font-weight:700;margin:0 0 12px;line-height:1.35}
+  .bar{display:flex;height:12px;border-radius:6px;overflow:hidden;margin:28px 0 12px;background:var(--line)}
   .bar span{display:block;height:100%}
   .bar .y{background:var(--ok)} .bar .m{background:var(--maybe)} .bar .n{background:var(--no)}
-  .legend{display:flex;gap:16px;font-size:13px;color:var(--sub);flex-wrap:wrap}
-  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:middle}
-  .kv{display:grid;grid-template-columns:120px 1fr;gap:8px 14px;margin-top:18px;font-size:15px}
-  .kv dt{color:var(--sub);font-weight:600}
-  .kv dd{margin:0}
-  .quote{border-left:3px solid var(--line);padding:6px 12px;margin:6px 0;color:var(--sub);background:#FAFAF7;border-radius:0 6px 6px 0}
-  .quote.new{border-color:var(--main);color:var(--ink);background:var(--main-soft)}
-  .note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;font-size:15px}
-  .cards{display:flex;flex-direction:column;gap:14px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
-  .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:10px}
-  .who{font-weight:700;font-size:16px}
-  .who small{display:block;font-weight:400;color:var(--sub);font-size:13px;margin-top:2px}
-  .badges{display:flex;gap:6px;flex-shrink:0}
-  .badge{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .stat{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#FBFAF7}
+  .stat b{display:block;font-size:26px;font-weight:800;line-height:1.1}
+  .stat span{font-size:13px;color:var(--sub);font-weight:600}
+  .stat.y b{color:var(--ok)} .stat.m b{color:var(--maybe)} .stat.n b{color:var(--no)}
+
+  .fixbox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:32px 40px}
+  .pill{display:inline-block;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--main-soft);color:var(--main);margin-bottom:14px}
+  .why{font-size:16px;color:var(--ink2);margin:0 0 22px}
+  .diff{display:grid;gap:12px}
+  .diff div{border-radius:12px;padding:16px 20px;font-size:17px;line-height:1.55}
+  .diff .now{background:#F3F1EC;color:var(--sub);border:1px dashed var(--line)}
+  .diff .new{background:var(--main-soft);color:var(--ink);border:1px solid #E7D3C2;font-weight:600}
+  .diff label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;margin-bottom:6px;color:var(--sub)}
+  .diff .new label{color:var(--main)}
+
+  .callouts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  .callout{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;font-size:15px}
+  .callout h3{font-size:13px;font-weight:700;color:var(--main);letter-spacing:.06em;margin:0 0 8px}
+  .callout p{margin:0;color:var(--ink2)}
+
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;border-top:4px solid var(--line)}
+  .card[data-verdict="yes"]{border-top-color:var(--ok)}
+  .card[data-verdict="no"]{border-top-color:var(--no)}
+  .card[data-verdict="maybe"]{border-top-color:var(--maybe)}
+  .card-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;color:#fff;background:var(--sub)}
+  .card[data-verdict="yes"] .avatar{background:var(--ok)}
+  .card[data-verdict="no"] .avatar{background:var(--no)}
+  .card[data-verdict="maybe"] .avatar{background:var(--maybe)}
+  .who{flex:1;min-width:0}
+  .who b{display:block;font-size:17px;font-weight:700}
+  .who small{display:block;font-size:13px;color:var(--sub);margin-top:1px}
+  .tags{display:flex;gap:6px;flex-shrink:0}
+  .tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
   .card[data-verdict="yes"] .verdict{background:var(--ok-soft);color:var(--ok)}
   .card[data-verdict="no"] .verdict{background:var(--no-soft);color:var(--no)}
   .card[data-verdict="maybe"] .verdict{background:var(--maybe-soft);color:var(--maybe)}
-  .kind{background:#EEE9DF;color:var(--sub)}
+  .kind{background:#EFEDE7;color:var(--sub)}
   .card[data-kind="near"] .kind{background:var(--main-soft);color:var(--main)}
-  .stop{font-size:14px;color:var(--sub);margin-bottom:10px}
+  .stop{font-size:13px;color:var(--sub);margin:0 0 14px;padding:8px 12px;background:#FBFAF7;border-radius:8px}
   .stop b{color:var(--ink)}
-  .qa{display:grid;grid-template-columns:72px 1fr;gap:6px 12px;font-size:14.5px;margin:0}
-  .qa dt{color:var(--sub);font-weight:600}
-  .qa dd{margin:0}
-  .fix{margin-top:12px;padding:10px 14px;background:var(--main-soft);border-radius:8px;font-size:14.5px}
-  .fix b{color:var(--main)}
-  ol.q{padding-left:20px;margin:0}
-  ol.q li{margin:6px 0}
-  footer{margin-top:40px;font-size:12.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:14px}
-  @media (max-width:600px){ .kv{grid-template-columns:1fr} .qa{grid-template-columns:1fr} h1{font-size:23px} .hero .big{font-size:19px} }
-  @media print{ body{background:#fff} .card,.hero,.note{break-inside:avoid} }
+  .qa{margin:0;display:grid;grid-template-columns:64px 1fr;gap:8px 12px;font-size:14.5px}
+  .qa dt{color:var(--sub);font-weight:700;font-size:13px;padding-top:2px}
+  .qa dd{margin:0;color:var(--ink2)}
+  .fix{margin-top:16px;padding:12px 14px;background:var(--main-soft);border-left:3px solid var(--main);border-radius:0 8px 8px 0;font-size:14.5px;line-height:1.55}
+  .fix b{display:block;font-size:12px;color:var(--main);letter-spacing:.04em;margin-bottom:4px}
+
+  .qs{display:grid;gap:12px}
+  .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;display:flex;gap:16px;align-items:flex-start;font-size:16px}
+  .q i{font-style:normal;font-weight:800;color:var(--main);font-size:20px;line-height:1.3;flex-shrink:0}
+  .disclaimer{font-size:15px;color:var(--ink2);margin:0 0 16px}
+
+  footer{margin-top:64px;font-size:12.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:16px;line-height:1.7}
+
+  @media (max-width:720px){
+    .wrap{padding:36px 18px 72px}
+    h1{font-size:26px}
+    .hero,.fixbox{padding:24px 22px}
+    .bignum{font-size:64px}
+    .hero-top p{font-size:18px}
+    .stats{gap:8px}
+    .stat b{font-size:20px}
+    .callouts,.cards{grid-template-columns:1fr}
+    .qa{grid-template-columns:1fr}
+  }
+  @media print{ body{background:#fff} .card,.hero,.fixbox,.callout,.q{break-inside:avoid;box-shadow:none} }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header>
-  <div class="eyebrow">첫 손님 7명 · 가상 한국인이 내 페이지를 읽었습니다</div>
+  <div class="eyebrow">첫 손님 7명</div>
   <h1>{{PROJECT_NAME}}</h1>
-  <div class="meta">{{DATE}} · 기획서 {{BRIEF_FILE}} · 페이지 {{PAGE_FILE}}</div>
+  <div class="meta">{{DATE}} · 기획서 {{BRIEF_FILE}} · 페이지 {{PAGE_FILE}} · 가상 한국인 7명이 읽었습니다</div>
 </header>
 
 <section class="hero">
-  <p class="big">7명 중 {{YES_N}}명이 신청 버튼을 누릅니다.</p>
+  <div class="hero-top">
+    <div class="bignum">{{YES_N}}<small>/ 7</small></div>
+    <p>명이 신청 버튼을 누릅니다.</p>
+  </div>
   <div class="bar" aria-label="누른다 {{YES_N}}, 모르겠다 {{MAYBE_N}}, 안 누른다 {{NO_N}}">
     <span class="y" style="width:calc({{YES_N}} / 7 * 100%)"></span>
     <span class="m" style="width:calc({{MAYBE_N}} / 7 * 100%)"></span>
     <span class="n" style="width:calc({{NO_N}} / 7 * 100%)"></span>
   </div>
-  <div class="legend">
-    <span><i style="background:var(--ok)"></i>누른다 {{YES_N}}</span>
-    <span><i style="background:var(--maybe)"></i>모르겠다 {{MAYBE_N}}</span>
-    <span><i style="background:var(--no)"></i>안 누른다 {{NO_N}}</span>
+  <div class="stats">
+    <div class="stat y"><b>{{YES_N}}</b><span>누른다</span></div>
+    <div class="stat m"><b>{{MAYBE_N}}</b><span>모르겠다</span></div>
+    <div class="stat n"><b>{{NO_N}}</b><span>안 누른다</span></div>
   </div>
-  <dl class="kv">
-    <dt>가장 많이 걸린 곳</dt><dd><b>{{STOP_SECTION}}</b> · {{STOP_WHY}}</dd>
-    <dt>바꿀 문장</dt>
-    <dd>
-      <div class="quote">지금: {{CURRENT_SENTENCE}}</div>
-      <div class="quote new">제안: {{PROPOSED_SENTENCE}}</div>
-    </dd>
-    <dt>근처 2명이 말해 주는 것</dt><dd>{{NEAR_INSIGHT}}</dd>
-  </dl>
 </section>
 
-<section id="form">
-  <h2>신청 항목</h2>
-  <div class="note">{{FORM_NOTE}}</div>
+<section class="sec">
+  <div class="sec-h"><h2>먼저 고칠 것 하나</h2><span>가장 많이 걸린 곳에서 문장 하나만 바꿉니다</span></div>
+  <div class="fixbox">
+    <span class="pill">{{STOP_SECTION}}</span>
+    <p class="why">{{STOP_WHY}}</p>
+    <div class="diff">
+      <div class="now"><label>지금</label>{{CURRENT_SENTENCE}}</div>
+      <div class="new"><label>제안</label>{{PROPOSED_SENTENCE}}</div>
+    </div>
+  </div>
+  <div class="callouts">
+    <div class="callout" id="form"><h3>신청 항목</h3><p>{{FORM_NOTE}}</p></div>
+    <div class="callout"><h3>근처 2명이 말해 주는 것</h3><p>{{NEAR_INSIGHT}}</p></div>
+  </div>
 </section>
 
-<h2>7명의 답</h2>
-<div class="cards">
+<section class="sec">
+  <div class="sec-h"><h2>7명의 답</h2><span>타깃 5명, 근처 2명</span></div>
+  <div class="cards">
 
 <!-- CARD START -->
 <article class="card" data-verdict="{{VERDICT}}" data-kind="{{KIND}}">
   <div class="card-head">
-    <div class="who">P{{N}} · {{NAME}} <small>{{AGE}}세 {{SEX}} · {{DISTRICT}} · {{OCCUPATION}} · {{FAMILY}}</small></div>
-    <div class="badges"><span class="badge kind">{{KIND_LABEL}}</span><span class="badge verdict">{{VERDICT_LABEL}}</span></div>
+    <div class="avatar">{{INITIAL}}</div>
+    <div class="who"><b>{{NAME}}</b><small>{{AGE}}세 {{SEX}} · {{DISTRICT}} · {{OCCUPATION}}</small></div>
+    <div class="tags"><span class="tag kind">{{KIND_LABEL}}</span><span class="tag verdict">{{VERDICT_LABEL}}</span></div>
   </div>
-  <div class="stop">멈춘 곳: <b>{{STOP}}</b></div>
+  <p class="stop">멈춘 곳 <b>{{STOP}}</b></p>
   <dl class="qa">
     <dt>불편</dt><dd>{{A1}}</dd>
     <dt>지금 방법</dt><dd>{{A2}}</dd>
@@ -124,25 +165,26 @@ REPORT 템플릿 · 치환 규칙 (클로드용)
     <dt>가격</dt><dd>{{A4}}</dd>
     <dt>페이지</dt><dd>{{A5}}</dd>
   </dl>
-  <div class="fix"><b>이렇게 바뀌면 누른다:</b> "{{FIX_QUOTE}}"</div>
+  <div class="fix"><b>이렇게 바뀌면 누른다</b>"{{FIX_QUOTE}}"</div>
 </article>
 <!-- CARD END -->
 
-</div>
+  </div>
+</section>
 
-<h2>이건 가설입니다</h2>
-<div class="note">
-  <p style="margin:0 0 10px">가상 고객 7명의 답은 통계 프로필로 만든 추정입니다. 실제 사람 3명에게 아래 세 가지를 물어보고 확인하세요.</p>
-  <ol class="q">
-    <li>{{REAL_Q1}}</li>
-    <li>{{REAL_Q2}}</li>
-    <li>{{REAL_Q3}}</li>
-  </ol>
-</div>
+<section class="sec">
+  <div class="sec-h"><h2>이건 가설입니다</h2><span>실제 사람 3명에게 확인하세요</span></div>
+  <p class="disclaimer">가상 고객 7명의 답은 통계 프로필로 만든 추정입니다. 실제 사람 3명을 만나 아래 세 가지를 물어보세요.</p>
+  <div class="qs">
+    <div class="q"><i>1</i><span>{{REAL_Q1}}</span></div>
+    <div class="q"><i>2</i><span>{{REAL_Q2}}</span></div>
+    <div class="q"><i>3</i><span>{{REAL_Q3}}</span></div>
+  </div>
+</section>
 
 <footer>
-  페르소나 데이터: NVIDIA Nemotron-Personas-Korea (CC BY 4.0) 중 10,000명(원본의 1%) 샘플. 모든 인물은 AI가 만든 가상 인물입니다. ·
-  도구: <a href="https://github.com/junleefc/first-7-customers" style="color:var(--main)">first-7-customers</a>
+  페르소나 데이터: NVIDIA Nemotron-Personas-Korea (CC BY 4.0)를 인구 비율 그대로 100분의 1로 줄인 10,000명. 모든 인물은 AI가 만든 가상 인물입니다.<br>
+  도구: <a href="https://github.com/junleefc/first-7-customers">first-7-customers</a>
 </footer>
 
 </div>
