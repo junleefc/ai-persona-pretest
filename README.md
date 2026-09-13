@@ -93,20 +93,21 @@ REPORT.md의 결론을 반영해서 index.html을 고쳐줘.
 
 ---
 
-## 데이터: 가상 한국인 5,000명
+## 데이터: 가상 한국인 100만 명
 
-NVIDIA가 공개한 **Nemotron-Personas-Korea**(100만 명의 한국인 합성 페르소나)에서 연령대·성별·권역이 고르게 섞이도록 5,000명을 뽑아 [personas.jsonl](personas.jsonl)에 넣어 두었습니다. 통계청, 대법원, 건강보험공단 등 실제 공공 통계를 바탕으로 AI가 만든 가상 인물이라 개인정보 문제가 없습니다.
+NVIDIA가 공개한 **Nemotron-Personas-Korea**를 씁니다. 통계청, 대법원, 건강보험공단 등 실제 공공 통계를 바탕으로 AI가 만든 100만 명의 가상 한국인 프로필입니다. 한 사람마다 나이, 성별, 지역, 직업, 학력, 혼인, 가구 형태, 주거 형태와 함께 직업·가족·관심사·목표를 서술한 한국어 텍스트가 있습니다. 가상 인물이라 개인정보 문제가 없습니다.
 
-한 사람마다 나이, 성별, 지역, 직업, 학력, 혼인, 가구 형태, 주거 형태와 함께 직업·가족·관심사·목표를 서술한 한국어 텍스트가 있습니다.
+**7명은 100만 명 전체에서 뽑습니다.** 클로드가 HuggingFace 데이터셋 서버 API에 기획서의 "누구" 조건을 걸어 전체에서 검색하고(예: 30~45세, 자녀와 거주, 텍스트에 "맞벌이" 또는 "학교"), 조건에 맞는 사람들 중 무작위 위치에서 100명을 받아 그중 7명을 고릅니다. 다운로드나 설치는 없습니다. 조건에 맞는 전체 인원(예: 8,380명)은 리포트의 선별 메모에 적힙니다.
+
+API가 안 될 때만 리포에 넣어 둔 [personas.jsonl](personas.jsonl)을 씁니다. 100만 명에서 연령대 6 × 성별 2 × 권역 5의 60개 집단별로 원본 비율대로 뽑은 5,000명(층화 추출, 각 집단 최소 30명)이고, 11MB라 바로 받을 수 있습니다. 추출 방법은 [scripts/build_sample.py](scripts/build_sample.py)에 있습니다.
 
 | 항목 | 내용 |
 |---|---|
 | 제작 | NVIDIA |
 | 원본 | [huggingface.co/datasets/nvidia/Nemotron-Personas-Korea](https://huggingface.co/datasets/nvidia/Nemotron-Personas-Korea) |
 | 라이선스 | CC BY 4.0 |
-| 이 리포의 샘플 | 5,000명, 11MB, 추출 방법은 [scripts/build_sample.py](scripts/build_sample.py) |
-
-5,000명인 이유: 깃허브에서 바로 받을 수 있는 파일 크기(20MB 이하)와, 타깃을 좁게 잡아도 후보가 나올 만큼의 인원 사이에서 정한 숫자입니다. 연령대 6 × 성별 2 × 권역 5의 60개 집단에서 원본 비율대로 뽑되 각 집단 최소 30명을 보장했습니다(층화 추출). 자녀 학년, 배우자 취업 여부처럼 원본에 없는 정보는 인원을 늘려도 나오지 않습니다.
+| 검색 방식 | HuggingFace 데이터셋 서버 filter API (100만 명 전체) |
+| 오프라인 대체 | personas.jsonl 5,000명 |
 
 ---
 
@@ -116,7 +117,7 @@ NVIDIA가 공개한 **Nemotron-Personas-Korea**(100만 명의 한국인 합성 �
 |---|---|
 | [PROMPT.md](PROMPT.md) | 참가자가 복사하는 프롬프트 3개 |
 | [GUIDE.md](GUIDE.md) | 클로드가 읽고 따르는 진행 안내. 페르소나 고르기, 인터뷰 질문, 종합 규칙, 출력 형식 |
-| [personas.jsonl](personas.jsonl) | 가상 한국인 5,000명 |
+| [personas.jsonl](personas.jsonl) | 오프라인 대체용 가상 한국인 5,000명 (기본은 API로 100만 명 전체 검색) |
 | [templates/report.html](templates/report.html) | REPORT.html 템플릿 |
 | [examples/gajeongtongsinmun](examples/gajeongtongsinmun) | 실행 예시. 입력(기획서, PRD, 페이지)과 출력(REPORT) |
 | [LICENSE-DATA.md](LICENSE-DATA.md) | 데이터 출처 표기 |
