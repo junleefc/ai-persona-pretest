@@ -3,9 +3,10 @@
 100만 명 색인(index.tsv.gz)에서 조건에 맞는 사람을 찾고, 전체 프로필을 HuggingFace /rows API로 받아 candidates.json에 저장한다.
 
 사용법:
-  python3 find_personas.py --age 30-55 --sex 남자 --occupation 자재,레미콘,시멘트 --region 경기,서울,인천 --n 40
-  python3 find_personas.py --age 30-45 --family 자녀 --region 서울,경기 --n 40
-  python3 find_personas.py --age 55-70 --occupation 임업,산림,농업 --n 40
+  python3 find_personas.py --age 30-55 --sex 남자 --occupation 자재,레미콘,시멘트 --region 경기,서울,인천 --n 24
+  python3 find_personas.py --age 20-29 --tag 수험생 --n 24
+  python3 find_personas.py --age 30-45 --family 자녀 --tag 육아,학부모 --region 서울,경기 --n 24
+  python3 find_personas.py --age 55-70 --occupation 임업,산림,농업 --n 24
 
 옵션 (모두 선택, 여러 값은 쉼표로 OR):
   --age 30-55        나이 범위
@@ -13,6 +14,10 @@
   --region 경기,서울   province 또는 district에 포함되는 글자
   --occupation 영업,자재  occupation에 포함되는 글자 (OR)
   --occupation-all 영업   occupation에 반드시 포함 (AND, 여러 개면 모두)
+  --tag 수험생,취업준비   상황 태그 (OR). 직업으로 안 잡히는 타깃을 찾을 때 쓴다
+  --tag-all 육아,학부모   상황 태그 (AND, 모두 가진 사람만)
+      쓸 수 있는 태그: 수험생 취업준비 창업준비 퇴사은퇴 육아 학부모 돌봄간병 건강관리
+                      반려동물 재테크 귀농귀촌 프리랜서 1인가구 외국어유학 콘텐츠창작 결혼준비
   --marital 배우자있음|미혼 ...
   --family 자녀,혼자    family_type에 포함되는 글자 (OR)
   --n 24             전체 프로필을 받을 인원 (기본 24, 최대 100). 늘릴수록 오래 걸린다
@@ -76,13 +81,15 @@ def main():
     p.add_argument("--age"); p.add_argument("--sex"); p.add_argument("--region")
     p.add_argument("--occupation"); p.add_argument("--occupation-all", dest="occ_all")
     p.add_argument("--marital"); p.add_argument("--family")
+    p.add_argument("--tag"); p.add_argument("--tag-all", dest="tag_all")
     p.add_argument("--n", type=int, default=24); p.add_argument("--seed", type=int)
     p.add_argument("--index", default="index.tsv.gz"); p.add_argument("--out", default="candidates.json")
     a = p.parse_args()
     n = max(1, min(a.n, 100))
     lo, hi = (map(int, a.age.split("-")) if a.age else (0, 999))
     split = lambda s: [x.strip() for x in s.split(",") if x.strip()] if s else None
-    region, occ, occ_all, marital, family = map(split, [a.region, a.occupation, a.occ_all, a.marital, a.family])
+    region, occ, occ_all, marital, family, tag, tag_all = map(
+        split, [a.region, a.occupation, a.occ_all, a.marital, a.family, a.tag, a.tag_all])
 
     hits = []
     for r in load_index(a.index):
@@ -93,6 +100,9 @@ def main():
         if occ_all and not all(w in r["occupation"] for w in occ_all): continue
         if marital and not any_in(r["marital_status"], marital): continue
         if family and not any_in(r["family_type"], family): continue
+        rtags = r.get("tags", "") or ""
+        if tag and not any(t in rtags.split(",") for t in tag): continue
+        if tag_all and not all(t in rtags.split(",") for t in tag_all): continue
         hits.append(r)
 
     print(f"100만 명 중 조건 매칭 {len(hits)}명", file=sys.stderr)
@@ -117,7 +127,7 @@ def main():
             break
     print(file=sys.stderr)
 
-    if len(out) < 10:
+    if len(out) < min(10, n):
         local = from_local(hits, n)
         if local:
             print(f"HuggingFace에서 {len(out)}명만 받아, 대체 파일(personas.jsonl)에서 같은 조건으로 {len(local)}명을 찾았습니다.", file=sys.stderr)
