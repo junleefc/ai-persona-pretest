@@ -15,13 +15,13 @@
   --occupation-all 영업   occupation에 반드시 포함 (AND, 여러 개면 모두)
   --marital 배우자있음|미혼 ...
   --family 자녀,혼자    family_type에 포함되는 글자 (OR)
-  --n 40             전체 프로필을 받을 인원 (기본 40, 최대 100)
+  --n 24             전체 프로필을 받을 인원 (기본 24, 최대 100). 늘릴수록 오래 걸린다
   --seed 7           무작위 시드 (기본: 매번 다름)
   --index index.tsv.gz --out candidates.json
 
 출력: 매칭 인원 수를 화면에, 후보 전체 프로필을 candidates.json에.
 """
-import argparse, csv, gzip, json, random, sys, time, urllib.parse, urllib.request
+import argparse, csv, gzip, json, os, random, sys, time, urllib.error, urllib.parse, urllib.request
 
 API = "https://datasets-server.huggingface.co/rows?dataset=nvidia%2FNemotron-Personas-Korea&config=default&split=train"
 
@@ -39,15 +39,36 @@ def any_in(val, words):
 
 
 def fetch_row(offset, tries=4):
+    """HuggingFace에서 한 사람의 전체 프로필을 받는다. 429(요청 제한)는 길게 기다렸다 다시 시도한다."""
     url = f"{API}&offset={offset}&length=1"
     for t in range(tries):
         try:
             with urllib.request.urlopen(url, timeout=30) as resp:
                 d = json.load(resp)
             return d["rows"][0]["row"]
-        except Exception as e:
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                time.sleep([6, 20, 45, 60][min(t, 3)])
+            else:
+                time.sleep(2 * (t + 1))
+        except Exception:
             time.sleep(2 * (t + 1))
     return None
+
+
+def from_local(hits, n, path="personas.jsonl"):
+    """HuggingFace를 못 쓸 때. 같은 조건을 대체 파일에서 다시 건다."""
+    if not os.path.exists(path):
+        return []
+    keys = {(r["age"], r["sex"], r["district"], r["occupation"]) for r in hits}
+    out = []
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            r = json.loads(line)
+            if (r.get("age"), r.get("sex"), r.get("district"), r.get("occupation")) in keys:
+                out.append(r)
+    random.shuffle(out)
+    return out[:n]
 
 
 def main():
@@ -55,7 +76,7 @@ def main():
     p.add_argument("--age"); p.add_argument("--sex"); p.add_argument("--region")
     p.add_argument("--occupation"); p.add_argument("--occupation-all", dest="occ_all")
     p.add_argument("--marital"); p.add_argument("--family")
-    p.add_argument("--n", type=int, default=40); p.add_argument("--seed", type=int)
+    p.add_argument("--n", type=int, default=24); p.add_argument("--seed", type=int)
     p.add_argument("--index", default="index.tsv.gz"); p.add_argument("--out", default="candidates.json")
     a = p.parse_args()
     n = max(1, min(a.n, 100))
@@ -85,13 +106,25 @@ def main():
     for i, r in enumerate(picked, 1):
         full = fetch_row(r["row"])
         if full is None:
-            failed += 1; continue
-        full["row"] = r["row"]
-        out.append(full)
-        print(f"  받는 중 {i}/{len(picked)}", end="\r", file=sys.stderr)
+            failed += 1
+        else:
+            full["row"] = r["row"]
+            out.append(full)
+        print(f"  받는 중 {i}/{len(picked)} (성공 {len(out)}, 실패 {failed})", end="\r", file=sys.stderr)
+        time.sleep(0.35 + rng.random() * 0.3)   # 서버에 무리를 주지 않으려고 쉬어 간다
+        if failed >= 8 and len(out) < 5:        # 계속 막히면 더 두드리지 않는다
+            print("\n  요청이 계속 막혀 중단했습니다.", file=sys.stderr)
+            break
     print(file=sys.stderr)
+
+    if len(out) < 10:
+        local = from_local(hits, n)
+        if local:
+            print(f"HuggingFace에서 {len(out)}명만 받아, 대체 파일(personas.jsonl)에서 같은 조건으로 {len(local)}명을 찾았습니다.", file=sys.stderr)
+            print("선별 메모에 '대체 파일 사용'이라고 적으세요.", file=sys.stderr)
+            out = local
     if not out:
-        sys.exit("HuggingFace /rows API에서 프로필을 받지 못했습니다. 네트워크를 확인하거나 대체 파일(personas.jsonl)을 쓰세요.")
+        sys.exit("프로필을 받지 못했습니다. 잠시 뒤 다시 실행하거나, personas.jsonl을 받아 같은 폴더에 두고 다시 실행하세요.")
     json.dump({"matched_total": len(hits), "fetched": len(out), "failed": failed, "candidates": out},
               open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"후보 {len(out)}명 저장: {a.out} (실패 {failed})", file=sys.stderr)

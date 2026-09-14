@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """
-NVIDIA Nemotron-Personas-Korea 원본(100만 명)에서 10,000명(100만 명의 1%)을 층화 추출해 personas.jsonl로 저장한다.
-제작자용 스크립트. 참가자는 실행하지 않는다.
+원본 parquet(100만 명) -> personas.jsonl (대체용 표본). 제작자용.
 
-층화 기준: 연령대(6) x 성별(2) x 권역(5). 각 셀에 원본 비율만큼 배정하되 최소 50명 보장.
+두 가지를 합친다.
+1) 직업 커버: 2,120개 직업마다 최대 4명. 방송작가, 임업 종사자처럼 드문 직업이 사라지지 않게 한다.
+2) 인구 비례: 연령대(6) x 성별(2) x 권역(5)로 나눠 원본 비율대로 6,000명, 각 칸 최소 30명.
+겹치는 사람은 한 번만 넣는다.
 """
 import glob, json, os, sys
 import pandas as pd
 
 SNAP = os.path.expanduser("~/.cache/huggingface/hub/datasets--nvidia--Nemotron-Personas-Korea/snapshots/*/data/train-*.parquet")
-N_TOTAL = 10000
-MIN_PER_CELL = 50
+PER_OCC = 4
+N_DEMO = 6000
+MIN_PER_CELL = 30
 SEED = 7
 
 KEEP = ["uuid", "age", "sex", "province", "district", "occupation", "education_level",
@@ -43,34 +46,32 @@ def age_band(a):
 files = sorted(glob.glob(SNAP))
 if not files:
     sys.exit("parquet not found")
-frames = [pd.read_parquet(f, columns=KEEP) for f in files]
-df = pd.concat(frames, ignore_index=True)
+df = pd.concat([pd.read_parquet(f, columns=KEEP) for f in files], ignore_index=True)
 print("원본", len(df), file=sys.stderr)
 
-df["_band"] = df["age"].map(age_band)
-df["_region"] = df["province"].map(region_of)
-df["_cell"] = df["_band"] + "|" + df["sex"].astype(str) + "|" + df["_region"]
+# 1) 직업 커버
+idx = []
+for _, g in df.groupby("occupation", dropna=True, observed=True):
+    idx.extend(g.sample(n=min(PER_OCC, len(g)), random_state=SEED).index.tolist())
+occ = df.loc[idx]
+print("직업 커버", len(occ), "명 /", df["occupation"].nunique(), "직업", file=sys.stderr)
 
-counts = df["_cell"].value_counts()
-alloc = (counts / counts.sum() * N_TOTAL).round().astype(int).clip(lower=MIN_PER_CELL)
-# 합계를 N_TOTAL에 맞춤 (가장 큰 셀에서 조정)
-diff = N_TOTAL - alloc.sum()
-alloc[alloc.idxmax()] += diff
+# 2) 인구 비례
+d = df.copy()
+d["_cell"] = d["age"].map(age_band) + "|" + d["sex"].astype(str) + "|" + d["province"].map(region_of)
+counts = d["_cell"].value_counts()
+alloc = (counts / counts.sum() * N_DEMO).round().astype(int).clip(lower=MIN_PER_CELL)
+parts = [d[d["_cell"] == cell].sample(n=min(n, int((d["_cell"] == cell).sum())), random_state=SEED)
+         for cell, n in alloc.items()]
+demo = pd.concat(parts).drop(columns=["_cell"])
+print("인구 비례", len(demo), file=sys.stderr)
 
-parts = []
-for cell, n in alloc.items():
-    sub = df[df["_cell"] == cell]
-    parts.append(sub.sample(n=min(n, len(sub)), random_state=SEED))
-out = pd.concat(parts).sample(frac=1, random_state=SEED).reset_index(drop=True)
+out = pd.concat([occ, demo]).drop_duplicates(subset=["uuid"]).sample(frac=1, random_state=SEED).reset_index(drop=True)
+print("합계", len(out), file=sys.stderr)
+print(out["occupation"].nunique(), "직업 포함", file=sys.stderr)
 
-print("추출", len(out), file=sys.stderr)
-print(out["_band"].value_counts().sort_index().to_string(), file=sys.stderr)
-print(out["sex"].value_counts().to_string(), file=sys.stderr)
-print(out["_region"].value_counts().to_string(), file=sys.stderr)
-
-out = out.drop(columns=["_band", "_region", "_cell"])
 with open("personas.jsonl", "w", encoding="utf-8") as f:
     for rec in out.to_dict(orient="records"):
-        rec = {k: (int(v) if k == "age" else v) for k, v in rec.items()}
+        rec["age"] = int(rec["age"])
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
-print("saved personas.jsonl", os.path.getsize("personas.jsonl") // 1024, "KB", file=sys.stderr)
+print("saved personas.jsonl", os.path.getsize("personas.jsonl") // 1024 // 1024, "MB", file=sys.stderr)

@@ -45,7 +45,7 @@ REPORT.md의 결론을 반영해서 index.html을 고쳐줘.
 | 단계 | 시간 | 채팅창에 보이는 것 |
 |---|---|---|
 | 기획서와 페이지 읽기 | 30초 | 기획서에서 뽑은 여섯 가지 표 |
-| 100만 명에서 조건 검색 | 1~2분 | 색인 13MB 받고, 조건에 맞는 40명 프로필을 받습니다. "100만 명 중 조건 매칭 N명"이 나옵니다 |
+| 100만 명에서 조건 검색 | 1~2분 | 색인 13MB 받고, 조건에 맞는 24명 프로필을 받습니다. "100만 명 중 조건 매칭 N명"이 나옵니다 |
 | 7명 고르기 | 30초 | 7명 표(이름, 나이, 지역, 직업, 고른 이유)와 "100만 명 중 조건 매칭 N명" |
 | 7명 인터뷰 | 3~5분 | 가장 오래 걸립니다. 한 사람씩 답이 올라옵니다 |
 | 종합과 리포트 만들기 | 1~2분 | REPORT.md, REPORT.html 저장 후 브라우저가 열립니다 |
@@ -123,7 +123,7 @@ NVIDIA가 공개한 **Nemotron-Personas-Korea**를 씁니다. 통계청, 대법�
 
 왜 전체에서 찾나: 레미콘 영업, 임업인, 묘목 생산자처럼 좁은 타깃은 표본을 줄이면 사라집니다. 100만 명에는 건축자재 영업원이 168명, 임업 관련이 202명 있지만 1만 명으로 줄이면 0~2명입니다. 타깃이 아닌 사람에게 물으면 당연히 안 누르고, 그 답은 페이지 문제가 아니라 사람을 잘못 데려온 것입니다. 직업은 2,120종으로 세분돼 있어서 대부분의 타깃을 직업으로 잡을 수 있습니다.
 
-HuggingFace 접속이 안 될 때만 리포에 넣어 둔 [personas.jsonl](personas.jsonl)을 씁니다. 100만 명을 연령대·성별·권역 비율 그대로 100분의 1로 줄인 1만 명(23MB)입니다.
+HuggingFace 접속이 안 될 때만 리포에 넣어 둔 [personas.jsonl](personas.jsonl)을 씁니다. 13,798명(31MB)이고, 2,120개 직업이 하나도 빠짐없이 들어가도록 직업마다 최대 4명씩 넣은 뒤 인구 비례 표본을 더한 것입니다. 그래서 드문 직업도 몇 명은 남아 있습니다.
 
 | 항목 | 내용 |
 |---|---|
@@ -131,7 +131,7 @@ HuggingFace 접속이 안 될 때만 리포에 넣어 둔 [personas.jsonl](perso
 | 원본 | [huggingface.co/datasets/nvidia/Nemotron-Personas-Korea](https://huggingface.co/datasets/nvidia/Nemotron-Personas-Korea), 100만 명 |
 | 라이선스 | CC BY 4.0 |
 | 검색 방식 | 색인 파일(index.tsv.gz, 100만 명)로 로컬 검색 후 HuggingFace rows API로 프로필 수신 |
-| 대체 파일 | personas.jsonl 1만 명 (API 실패 시) |
+| 대체 파일 | personas.jsonl 13,798명, 2,120개 직업 전부 포함 (접속 실패 시) |
 
 ---
 
@@ -143,7 +143,7 @@ HuggingFace 접속이 안 될 때만 리포에 넣어 둔 [personas.jsonl](perso
 | [GUIDE.md](GUIDE.md) | 클로드가 읽고 따르는 진행 안내. 페르소나 고르기, 인터뷰 질문, 종합 규칙, 출력 형식 |
 | [index.tsv.gz](index.tsv.gz) | 100만 명 색인(나이·성별·지역·직업·혼인·가구). 13MB |
 | [scripts/find_personas.py](scripts/find_personas.py) | 색인에서 조건 검색 후 전체 프로필을 받아 candidates.json 생성. 클로드가 실행 |
-| [personas.jsonl](personas.jsonl) | 대체용 가상 한국인 1만 명 (HuggingFace 접속 실패 시) |
+| [personas.jsonl](personas.jsonl) | 대체용 13,798명. 2,120개 직업 전부 포함 |
 | [templates/report.html](templates/report.html) | REPORT.html 템플릿 |
 | [scripts/fill_report.py](scripts/fill_report.py) | report.json을 템플릿에 채워 REPORT.html을 만드는 스크립트. 클로드가 실행 |
 | [examples/gajeongtongsinmun](examples/gajeongtongsinmun) | 실행 예시. 입력(기획서, PRD, 페이지)과 출력(REPORT) |
