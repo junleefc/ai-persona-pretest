@@ -24,6 +24,8 @@ report.json 형식:
      "a1": "...", "a2": "...", "a3": "...", "a4": "...", "a5": "...", "fix": "..."}
   ],
   "real_questions": ["...", "...", "..."],
+  "panel_title": "선택. 7명이 내 타깃이 아닐 때만 쓴다",
+  "panel_note": "선택. 위와 같을 때 맨 위에 띄울 경고 문장. 없으면 null",
   "sampling": {
     "source_short": "NVIDIA Nemotron-Personas-Korea 100만 명에서 검색",
     "source_line": "NVIDIA Nemotron-Personas-Korea. 통계청·대법원·건강보험공단 통계로 만든 가상 인물. CC BY 4.0",
@@ -119,6 +121,15 @@ def main(json_path, tpl_path, out_path):
     }
     for k, v in top_samp.items():
         tpl = tpl.replace("{{" + k + "}}", esc(v))
+
+    # 패널 경고 배너: 없으면 통째로 제거
+    pn = d.get("panel_note")
+    if pn:
+        tpl = tpl.replace("{{PANEL_TITLE}}", esc(d.get("panel_title", "이 결과는 페이지 문제가 아닙니다")))
+        tpl = tpl.replace("{{PANEL_NOTE}}", esc(pn))
+        tpl = tpl.replace("<!-- PANEL START -->", "").replace("<!-- PANEL END -->", "")
+    else:
+        tpl = re.sub(r"\s*<!-- PANEL START -->.*?<!-- PANEL END -->\s*", "\n", tpl, flags=re.S)
 
     # 신청 항목 콜아웃: 없으면 통째로 제거
     if not d.get("form_note"):

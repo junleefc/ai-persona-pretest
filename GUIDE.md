@@ -162,6 +162,13 @@ curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-cu
 
 ## 5. 종합
 
+**먼저 패널을 점검한다.** 타깃 5명 중 3명 이상이 "나는 이 서비스가 겨냥한 사람이 아니다"라는 이유로 첫 화면에서 멈췄다면, 그건 페이지가 나쁜 게 아니라 **타깃과 같은 사람을 못 찾은 것**이다. 이때는 `report.json`에 `panel_title`과 `panel_note`를 채운다. 리포트 맨 위에 경고가 뜬다.
+
+- `panel_title` 예: "이 결과는 페이지 문제가 아닙니다"
+- `panel_note` 예: "100만 명 안에 공인회계사 수험생이 없어, 다른 시험을 준비하는 수험생 5명에게 물었습니다. 이 사람들이 안 누른 이유는 '내 시험이 아니어서'입니다. 페이지 문장을 고칠 근거로 쓰지 마세요. 대신 아래 질문 3개를 실제 수험생에게 물어보세요."
+
+이 경우 3번 "바꿀 문장"은 억지로 만들지 말고, 타깃을 다시 정의하거나 실제 사람을 만나라는 내용으로 쓴다. 클릭 수는 그대로 두되 참고 수치다. 패널이 타깃과 맞으면 `panel_note`는 `null`로 둔다.
+
 7명 결과를 모아 아래 순서로 정리한다. 이 순서가 리포트 상단이다.
 
 1. **결과 한 줄.** "7명 중 N명이 누른다. M명은 안 누르고, K명은 모르겠다."
@@ -203,6 +210,7 @@ curl -fL -o fill_report.py https://raw.githubusercontent.com/junleefc/first-7-cu
    - `form_note`(신청 항목 지적. 없으면 `null`), `near_insight`
    - `personas` 7명: `name, age, sex, district, occupation, kind(target|near), verdict(yes|no|maybe), stop(첫 화면|차이|무료 제안|신청 항목|없음), a1~a5, fix`
    - `real_questions` 3개
+   - `panel_title`, `panel_note`: 위 패널 점검에 걸렸을 때만. 아니면 `null`
    - `sampling`: 이 7명을 어떻게 뽑았는지. 리포트에 깔때기(100만 명 → 조건 매칭 N명 → 프로필 수신 N명 → 7명)와 조건 표로 그려진다. 반드시 채운다.
      - `matched_total`, `fetched`: find_personas.py 출력의 숫자 그대로
      - `match_line`: 검색 조건을 한 줄로 (예: "30~55세 남성, 서울·경기·인천, 직업에 자재 또는 건설 + 영업")
