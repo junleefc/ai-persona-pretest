@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>첫 손님 7명 · 가정통신문 정리 서비스</title>
+<title>AI 고객 페르소나 사전검증 · 가정통신문 정리 서비스</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   :root{
@@ -20,6 +20,8 @@
   .eyebrow{font-size:13px;font-weight:700;color:var(--main);letter-spacing:.06em;margin-bottom:10px}
   h1{font-size:34px;line-height:1.25;margin:0 0 8px;font-weight:800;letter-spacing:-.01em}
   .meta{font-size:14px;color:var(--sub)}
+  .refnote{margin-top:14px;padding:12px 16px;background:#F1EFEA;border-left:3px solid var(--sub);border-radius:0 8px 8px 0;font-size:13.5px;line-height:1.65;color:var(--ink2);max-width:760px}
+  .refnote b{color:var(--ink)}
 
   .sec{margin-top:56px}
   .sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
@@ -40,6 +42,9 @@
   .stat span{font-size:13px;color:var(--sub);font-weight:600}
   .stat.y b{color:var(--ok)} .stat.m b{color:var(--maybe)} .stat.n b{color:var(--no)}
 
+  .warnbanner{background:#FFF4ED;border:1px solid #E7C3AC;border-left:5px solid var(--main);border-radius:14px;padding:22px 28px;margin-top:16px}
+  .warnbanner b{display:block;font-size:16px;color:var(--main);margin-bottom:8px}
+  .warnbanner p{margin:0;font-size:15px;line-height:1.7;color:var(--ink2)}
   .fixbox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:32px 40px}
   .pill{display:inline-block;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--main-soft);color:var(--main);margin-bottom:14px}
   .why{font-size:16px;color:var(--ink2);margin:0 0 22px}
@@ -140,9 +145,10 @@
 <div class="wrap">
 
 <header>
-  <div class="eyebrow">첫 손님 7명</div>
+  <div class="eyebrow">AI 고객 페르소나 사전검증</div>
   <h1>가정통신문 정리 서비스</h1>
-  <div class="meta">2026-09-14 · 기획서 기획서.md · 페이지 index.html · 가상 한국인 7명이 읽었습니다</div>
+  <div class="meta">2026-09-14 · 기획서 기획서.md · 페이지 index.html · Claude로 9분 걸림</div>
+  <div class="refnote"><b>참고 자료입니다.</b> 통계로 만든 가상 인물 7명의 추정 반응입니다. 실제 고객 조사를 대신하지 않습니다. 아래 숫자는 판정이 아니라 어느 문장을 다시 볼지 고르는 힌트로 쓰세요.</div>
 </header>
 
 <section class="hero">
@@ -161,7 +167,6 @@
     <div class="stat n"><b>2</b><span>안 누른다</span></div>
   </div>
 </section>
-
 <section class="sec">
   <div class="sec-h"><h2>먼저 고칠 것 하나</h2><span>가장 많이 걸린 곳에서 문장 하나만 바꿉니다</span></div>
   <div class="fixbox">
@@ -507,7 +512,7 @@
 </section>
 
 <section class="sec">
-  <div class="sec-h"><h2>이건 가설입니다</h2><span>실제 사람 3명에게 확인하세요</span></div>
+  <div class="sec-h"><h2>다음에 할 일</h2><span>실제 사람 3명에게 확인하세요</span></div>
   <p class="disclaimer">가상 고객 7명의 답은 통계 프로필로 만든 추정입니다. 실제 사람 3명을 만나 아래 세 가지를 물어보세요.</p>
   <div class="qs">
     <div class="q"><i>1</i><span>지난달에 아이 준비물을 놓친 적이 있나요? 있었다면 통신문을 못 읽은 건가요, 읽고도 잊은 건가요?</span></div>
@@ -518,7 +523,7 @@
 
 <footer>
   페르소나 데이터: NVIDIA Nemotron-Personas-Korea (CC BY 4.0) 100만 명에서 조건 검색. 모든 인물은 AI가 만든 가상 인물입니다.<br>
-  도구: <a href="https://github.com/junleefc/first-7-customers">first-7-customers</a>
+  도구: <a href="https://github.com/junleefc/ai-persona-pretest">ai-persona-pretest</a>
 </footer>
 
 </div>

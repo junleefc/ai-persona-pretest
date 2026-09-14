@@ -8,6 +8,7 @@ report.json + templates/report.html -> REPORT.html
 report.json 형식:
 {
   "project_name": "가정통신문 정리 서비스",
+  "run_info": "Claude Sonnet 4.5로 18분 걸림",
   "date": "2026-09-13",
   "brief_file": "기획서.md",
   "page_file": "index.html",
@@ -139,6 +140,7 @@ def main(json_path, tpl_path, out_path):
     top = {
         "PROJECT_NAME": d["project_name"], "DATE": d["date"],
         "BRIEF_FILE": d["brief_file"], "PAGE_FILE": d["page_file"],
+        "RUN_INFO": d.get("run_info") or "가상 인물 7명 인터뷰",
         "YES_N": yes, "MAYBE_N": maybe, "NO_N": no,
         "STOP_SECTION": d["stop_section"], "STOP_WHY": d["stop_why"],
         "CURRENT_SENTENCE": d["current_sentence"], "PROPOSED_SENTENCE": d["proposed_sentence"],

@@ -1,21 +1,21 @@
-# 복사해서 붙여넣는 프롬프트
+# AI 고객 페르소나 사전검증 · 복사해서 붙여넣는 프롬프트
 
 Claude 데스크탑 앱의 **Code 탭**에서, 오늘 랜딩페이지를 만든 **mvp 폴더를 연 상태**로 보냅니다.
 폴더 안에 기획서 md, PRD.md, index.html이 있어야 합니다.
 
 ---
 
-## A. 첫 손님 7명에게 보여주기
+## A. 7명에게 보여주기
 
 ```
-https://github.com/junleefc/first-7-customers
+https://github.com/junleefc/ai-persona-pretest
 이 리포의 GUIDE.md를 읽고 그대로 진행해줘.
 이 폴더에 내 기획서 md, PRD.md, index.html이 있어.
 가상 한국인 7명에게 내 페이지를 보여주고 신청 버튼을 누를지 물어봐줘.
-다 되면 REPORT.html을 브라우저로 열어서 보여줘.
+다 되면 리포트를 브라우저로 열어서 보여줘.
 ```
 
-5~10분 걸립니다. 7명 인터뷰를 쓰는 데 시간이 가장 많이 듭니다. 보내 놓고 다른 일을 하셔도 됩니다. 끝나면 REPORT.html이 열립니다. 맨 위 "7명 중 N명"과 "바꿀 문장"만 보면 됩니다.
+Opus는 6~10분, Sonnet은 15~25분 걸립니다. 7명 인터뷰를 쓰는 데 시간이 가장 많이 듭니다. 보내 놓고 다른 일을 하셔도 됩니다. 끝나면 리포트가 열립니다. 맨 위 "7명 중 N명"과 "바꿀 문장"만 보면 됩니다.
 
 ---
 
@@ -24,12 +24,12 @@ https://github.com/junleefc/first-7-customers
 폴더에 index.html이 없거나, 배포한 게 최신이면 주소를 같이 줍니다. 기획서 md가 없어도 페이지에서 추정해 진행합니다.
 
 ```
-https://github.com/junleefc/first-7-customers
+https://github.com/junleefc/ai-persona-pretest
 이 리포의 GUIDE.md를 읽고 그대로 진행해줘.
 내 사이트 주소는 {{배포한 사이트 주소}} 야. 이 페이지를 받아서 써줘.
 이 폴더에 기획서 md가 있으면 같이 읽어줘.
 가상 한국인 7명에게 내 페이지를 보여주고 신청 버튼을 누를지 물어봐줘.
-다 되면 REPORT.html을 브라우저로 열어서 보여줘.
+다 되면 리포트를 브라우저로 열어서 보여줘.
 ```
 
 ---
@@ -37,7 +37,7 @@ https://github.com/junleefc/first-7-customers
 ## B. 결과대로 페이지 고치기
 
 ```
-REPORT.md의 결론을 반영해서 index.html을 고쳐줘.
+리포트 결론을 반영해서 index.html을 고쳐줘.
 가장 많이 걸린 구간의 문장만 바꾸고, 나머지 내용과 디자인은 그대로 둬.
 다 되면 브라우저에서 다시 열어서 보여줘.
 ```
@@ -48,7 +48,7 @@ REPORT.md의 결론을 반영해서 index.html을 고쳐줘.
 
 ```
 고친 index.html로 같은 7명에게 다시 물어봐줘.
-이번엔 REPORT-2.md와 REPORT-2.html로 저장하고, 지난번과 무엇이 달라졌는지 맨 위에 한 줄로 써줘.
+오늘 날짜를 붙여 새 리포트로 저장하고, 지난번과 무엇이 달라졌는지 맨 위에 한 줄로 써줘.
 ```
 
 ---

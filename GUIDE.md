@@ -62,13 +62,13 @@ index.html은 실제로 열어 텍스트를 위에서 아래 순서로 뽑아 �
 
 ## 2. 페르소나 데이터 준비
 
-100만 명 전체에서 찾는다. 방법은 두 단계다. 색인 파일(13MB, 100만 명의 나이·성별·지역·직업·혼인·가구)로 내 컴퓨터에서 조건 검색을 하고, 고른 후보의 전체 프로필만 HuggingFace에서 받아온다. API 키는 없다.
+100만 명 전체에서 찾는다. 방법은 두 단계다. 색인 파일(15MB, 100만 명의 나이·성별·지역·직업·혼인·가구·상황 태그)로 내 컴퓨터에서 조건 검색을 하고, 고른 후보의 전체 프로필만 HuggingFace에서 받아온다. API 키는 없다.
 
 현재 폴더에 `index.tsv.gz`와 `find_personas.py`가 없으면 받는다.
 
 ```bash
-curl -fL -o index.tsv.gz https://raw.githubusercontent.com/junleefc/first-7-customers/main/index.tsv.gz
-curl -fL -o find_personas.py https://raw.githubusercontent.com/junleefc/first-7-customers/main/scripts/find_personas.py
+curl -fL -o index.tsv.gz https://raw.githubusercontent.com/junleefc/ai-persona-pretest/main/index.tsv.gz
+curl -fL -o find_personas.py https://raw.githubusercontent.com/junleefc/ai-persona-pretest/main/scripts/find_personas.py
 ```
 
 이름은 `persona` 텍스트 첫머리에 "OOO 씨"로 나온다. 그 이름을 그대로 쓴다. 새 이름을 짓지 않는다.
@@ -116,7 +116,7 @@ python3 find_personas.py --age 20-29 --tag 수험생 --n 24
 - **자녀 나이와 학년은 프로필에 거의 없다.** "초등 2학년 자녀"는 `--family 자녀 --age 30-45 --tag 육아,학부모`로 대체한다. 학년은 모르는 채로 둔다.
 - **배우자가 일하는지는 알 수 없다.** "맞벌이"는 "일하는 부모"로 읽는다. 아빠 페르소나도 뽑는다.
 - **과거 사건 기록이 없다.** "언제 겪었나"는 물을 수 없다. 생활 패턴에서 그 불편이 생길 상황이 있는지를 본다.
-- 색인에는 직업만 있고 프로필 본문은 없다. "퇴사 준비", "워킹맘" 같은 상황 키워드는 40명을 받은 뒤 `persona`, `professional_persona`, `family_persona`, `career_goals_and_ambitions` 텍스트에서 python으로 거른다.
+- 색인에는 프로필 본문이 없다. 태그로도 안 잡히는 세부 조건은 후보를 받은 뒤 `persona`, `professional_persona`, `family_persona`, `career_goals_and_ambitions` 텍스트에서 python으로 한 번 더 거른다.
 
 **매칭이 20명 미만이면** 조건을 하나씩 푼다. 푸는 순서: 지역 → 나이 범위 → 혼인·가구 → 직업 동의어 추가. **타깃 직업은 끝까지 지킨다.** 직업이 다른 사람을 타깃 5명에 넣지 않는다. 그런 사람은 근처 2명으로만 쓴다.
 
@@ -125,11 +125,11 @@ python3 find_personas.py --age 20-29 --tag 수험생 --n 24
 **find_personas.py가 프로필을 못 받으면**(HuggingFace 접속이 막히면) 아래 대체 파일을 같은 폴더에 받아 두고 스크립트를 다시 돌린다. 스크립트가 알아서 이 파일에서 같은 조건으로 찾는다. 13,798명이고 2,120개 직업이 모두 들어 있어 드문 직업도 몇 명은 있다. 선별 메모에 "대체 파일 사용"이라고 적는다.
 
 ```bash
-curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-customers/main/personas.jsonl \
-  || (curl -fL -o personas.jsonl.gz https://cdn.jsdelivr.net/gh/junleefc/first-7-customers@main/personas.jsonl.gz && gunzip -f personas.jsonl.gz)
+curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/ai-persona-pretest/main/personas.jsonl \
+  || (curl -fL -o personas.jsonl.gz https://cdn.jsdelivr.net/gh/junleefc/ai-persona-pretest@main/personas.jsonl.gz && gunzip -f personas.jsonl.gz)
 ```
 
-40명 후보에서 고른다.
+받아 온 후보에서 고른다.
 - 타깃 5명: 조건에 맞는 사람. 직업·지역·가족 상황이 서로 다르게 5명.
 - 근처 2명: 한 축만 일부러 벗어난 사람. 나이가 타깃보다 10살 위거나 아래, 또는 직업이 다르지만 같은 불편을 겪을 법한 사람. `find_personas.py`를 조건을 바꿔 한두 번 더 돌린다(`--age 56-65 --n 5 --out near_age.json`, `--occupation 기계장비 --n 5 --out near_occ.json`). 이 2명은 "나 말고 이 불편을 겪는 사람이 있나"를 확인하는 용도다.
 
@@ -184,7 +184,7 @@ curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-cu
 
 두 파일을 현재 폴더에 저장한다.
 
-**REPORT.md** : 이 순서로 쓴다.
+**REPORT-(오늘 날짜).md** : 파일 이름에 오늘 날짜를 붙인다. 예: `REPORT-2026-09-14.md`. 여러 번 돌려도 지난 결과가 남아 비교할 수 있다. 내용은 이 순서로 쓴다.
 1. 제목, 날짜, 읽은 파일 이름
 2. 기획서에서 뽑은 여섯 가지 표 (1절)
 3. 페이지 구간 (1절에서 뽑은 index.html 텍스트, 구간별로)
@@ -193,19 +193,20 @@ curl -fL -o personas.jsonl https://raw.githubusercontent.com/junleefc/first-7-cu
 6. 7명 인터뷰 전문 (4절)
 7. 출처 한 줄
 
-사용자가 다음에 "REPORT.md를 반영해서 고쳐줘"라고 할 때 클로드가 다시 읽는 파일이다. 종합 3번의 "현재 문장"은 index.html에 있는 그대로 정확히 인용한다.
+사용자가 다음에 "리포트 결론을 반영해서 고쳐줘"라고 하면 이 폴더에서 가장 최근 REPORT md 파일을 읽는다. 종합 3번의 "현재 문장"은 index.html에 있는 그대로 정확히 인용한다.
 
-**REPORT.html** : 손으로 HTML을 만들지 않는다. `report.json`을 쓰고 스크립트로 만든다.
+**REPORT-(오늘 날짜).html** : 손으로 HTML을 만들지 않는다. `report.json`을 쓰고 스크립트로 만든다.
 
 1. 템플릿과 스크립트를 받는다.
 
 ```bash
-curl -fL -o report-template.html https://raw.githubusercontent.com/junleefc/first-7-customers/main/templates/report.html
-curl -fL -o fill_report.py https://raw.githubusercontent.com/junleefc/first-7-customers/main/scripts/fill_report.py
+curl -fL -o report-template.html https://raw.githubusercontent.com/junleefc/ai-persona-pretest/main/templates/report.html
+curl -fL -o fill_report.py https://raw.githubusercontent.com/junleefc/ai-persona-pretest/main/scripts/fill_report.py
 ```
 
 2. 현재 폴더에 `report.json`을 쓴다. 형식은 `fill_report.py` 맨 위 주석에 있다. 요약하면:
    - `project_name, date, brief_file, page_file`
+   - `run_info`: 지금 쓰고 있는 모델 이름과 걸린 시간. 예: "Claude Sonnet 4.5로 18분 걸림". 모델 이름을 모르면 걸린 시간만 적는다
    - `stop_section`(첫 화면 / 차이 / 무료 제안 / 신청 항목), `stop_why`, `current_sentence`(index.html 원문 그대로), `proposed_sentence`
    - `form_note`(신청 항목 지적. 없으면 `null`), `near_insight`
    - `personas` 7명: `name, age, sex, district, occupation, kind(target|near), verdict(yes|no|maybe), stop(첫 화면|차이|무료 제안|신청 항목|없음), a1~a5, fix`
@@ -214,7 +215,7 @@ curl -fL -o fill_report.py https://raw.githubusercontent.com/junleefc/first-7-cu
    - `sampling`: 이 7명을 어떻게 뽑았는지. 리포트에 깔때기(100만 명 → 조건 매칭 N명 → 프로필 수신 N명 → 7명)와 조건 표로 그려진다. 반드시 채운다.
      - `matched_total`, `fetched`: find_personas.py 출력의 숫자 그대로
      - `match_line`: 검색 조건을 한 줄로 (예: "30~55세 남성, 서울·경기·인천, 직업에 자재 또는 건설 + 영업")
-     - `fetch_line`: "N명 중 무작위 40명 요청, M명 수신"
+     - `fetch_line`: "N명 중 무작위 24명 요청, M명 수신"
      - `conditions`: 표 3줄. 타깃 조건(기획서의 누구 → 검색 조건 → 결과), 근처 1(나이 축), 근처 2(직업 축)
      - `notes`: 데이터 한계 1~3줄 (예: "직업명에 레미콘은 없어 건축자재 영업원으로 대체")
      - `candidates`: candidates.json과 근처 검색 결과의 후보 전원. 이름·나이·성별·지역·직업·가구. 7명에 든 사람은 `picked: true`
@@ -223,12 +224,12 @@ curl -fL -o fill_report.py https://raw.githubusercontent.com/junleefc/first-7-cu
 3. 실행한다.
 
 ```bash
-python3 fill_report.py report.json report-template.html REPORT.html
+python3 fill_report.py report.json report-template.html REPORT-2026-09-14.html
 ```
 
-"saved REPORT.html"이 나오면 된 것이다. "채워지지 않은 자리"가 나오면 report.json에서 그 키를 채우고 다시 실행한다. 끝나면 `report-template.html`, `fill_report.py`, `find_personas.py`는 지운다. `report.json`, `candidates.json`, `index.tsv.gz`는 둔다(다시 돌릴 때 쓴다).
+"saved"가 나오면 된 것이다. "채워지지 않은 자리"가 나오면 report.json에서 그 키를 채우고 다시 실행한다. 끝나면 `report-template.html`, `fill_report.py`, `find_personas.py`는 지운다. `report.json`, `candidates.json`, `index.tsv.gz`는 둔다(다시 돌릴 때 쓴다).
 
-저장이 끝나면 REPORT.html을 브라우저로 연다(macOS `open REPORT.html`, Windows `start REPORT.html`). 그리고 사용자에게 이렇게 마무리한다.
+저장이 끝나면 만든 HTML을 브라우저로 연다(macOS `open REPORT-2026-09-14.html`, Windows `start REPORT-2026-09-14.html`). 그리고 사용자에게 이렇게 마무리한다.
 
 > 7명 중 N명이 누릅니다. 가장 많이 걸린 곳은 [구간]입니다.
-> 고치려면 이렇게 말하세요: "REPORT.md의 결론을 반영해서 index.html을 고쳐줘."
+> 고치려면 이렇게 말하세요: "리포트 결론을 반영해서 index.html을 고쳐줘."
