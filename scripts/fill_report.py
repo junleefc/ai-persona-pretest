@@ -8,13 +8,13 @@ report.json + templates/report.html -> REPORT.html
 report.json 형식:
 {
   "project_name": "가정통신문 정리 서비스",
-  "run_info": "Claude Sonnet 4.5로 18분 걸림",
+  "run_info": "Claude Opus 5로 6분 걸림",
   "date": "2026-09-13",
   "brief_file": "기획서.md",
   "page_file": "index.html",
   "yes_n": 3, "maybe_n": 2, "no_n": 2,
   "stop_section": "첫 화면",
-  "stop_basis": "신청하지 않은 3명 중 2명",
+  "stop_basis": "신청하지 않았거나 망설인 핵심 타깃 3명 중 2명",
   "stop_why": "안 누른 2명이 여기서 멈췄다. ...",
   "current_sentence": "index.html에 있는 문장 그대로",
   "proposed_sentence": "바꾼 문장",
