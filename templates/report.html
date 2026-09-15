@@ -46,6 +46,7 @@
   .warnbanner b{display:block;font-size:16px;color:var(--main);margin-bottom:8px}
   .warnbanner p{margin:0;font-size:15px;line-height:1.7;color:var(--ink2)}
   .fixbox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:32px 40px}
+  .basis{font-size:13px;color:var(--sub);margin-left:10px;font-weight:600}
   .pill{display:inline-block;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--main-soft);color:var(--main);margin-bottom:14px}
   .why{font-size:16px;color:var(--ink2);margin:0 0 22px}
   .diff{display:grid;gap:12px}
@@ -178,7 +179,7 @@
 <section class="sec">
   <div class="sec-h"><h2>먼저 고칠 것 하나</h2><span>가장 많이 걸린 곳에서 문장 하나만 바꿉니다</span></div>
   <div class="fixbox">
-    <span class="pill">{{STOP_SECTION}}</span>
+    <span class="pill">{{STOP_SECTION}}</span><span class="basis">{{STOP_BASIS}}</span>
     <p class="why">{{STOP_WHY}}</p>
     <div class="diff">
       <div class="now"><label>지금</label>{{CURRENT_SENTENCE}}</div>
