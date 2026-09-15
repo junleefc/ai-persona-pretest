@@ -7,524 +7,553 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
   :root{
-    --ink:#17202A; --ink2:#3D4852; --sub:#6B7580; --line:#E5E1D8; --bg:#F6F4EF; --card:#FFFFFF;
-    --main:#9A5427; --main-soft:#F5EBE2;
-    --ok:#0F766E; --ok-soft:#E3F1EE; --no:#B3261E; --no-soft:#F8E4E2; --maybe:#B7791F; --maybe-soft:#F8EEDC;
+    --ink:#111417; --ink2:#333B42; --sub:#69727A; --line:#DFDBD2; --bg:#F4F2ED; --card:#FFF;
+    --main:#8F4A1E; --main-soft:#F6E9DF;
+    --ok:#0E6E66; --ok-soft:#E0EFEC; --no:#A8221B; --no-soft:#F7E2E0; --maybe:#9A6410; --maybe-soft:#F6EBD8;
   }
-  *{box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;line-height:1.65;font-size:16px;word-break:keep-all}
-  .wrap{max-width:960px;margin:0 auto;padding:56px 24px 96px}
+  body{background:var(--bg);color:var(--ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+       line-height:1.6;word-break:keep-all;font-size:17px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:40px 24px 80px}
   a{color:var(--main)}
 
-  .eyebrow{font-size:13px;font-weight:700;color:var(--main);letter-spacing:.06em;margin-bottom:10px}
-  h1{font-size:34px;line-height:1.25;margin:0 0 8px;font-weight:800;letter-spacing:-.01em}
-  .meta{font-size:14px;color:var(--sub)}
-  .refnote{margin-top:14px;padding:12px 16px;background:#F1EFEA;border-left:3px solid var(--sub);border-radius:0 8px 8px 0;font-size:13.5px;line-height:1.65;color:var(--ink2);max-width:760px}
-  .refnote b{color:var(--ink)}
+  .top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+  .top .name{font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--main)}
+  .top .run{font-size:13px;color:var(--sub);font-weight:600}
+  h1{font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1.2}
+  .sub{font-size:14px;color:var(--sub);margin-top:8px}
 
-  .sec{margin-top:56px}
-  .sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
-  .sec-h h2{font-size:14px;font-weight:700;color:var(--main);letter-spacing:.06em;margin:0}
-  .sec-h span{font-size:14px;color:var(--sub)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:32px 36px;margin-top:20px}
+  .kick{font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--main);margin-bottom:6px}
+  .lead{font-size:14.5px;color:var(--sub);font-weight:600;margin-bottom:22px}
 
-  .hero{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:36px 40px;margin-top:36px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
-  .hero-top{display:flex;align-items:flex-end;gap:24px;flex-wrap:wrap}
-  .bignum{font-size:88px;line-height:1;font-weight:800;letter-spacing:-.04em;color:var(--ok)}
-  .bignum small{font-size:28px;color:var(--sub);font-weight:600;letter-spacing:0;margin-left:6px}
-  .hero-top p{font-size:22px;font-weight:700;margin:0 0 12px;line-height:1.35}
-  .bar{display:flex;height:12px;border-radius:6px;overflow:hidden;margin:28px 0 12px;background:var(--line)}
-  .bar span{display:block;height:100%}
-  .bar .y{background:var(--ok)} .bar .m{background:var(--maybe)} .bar .n{background:var(--no)}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  .stat{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#FBFAF7}
-  .stat b{display:block;font-size:26px;font-weight:800;line-height:1.1}
-  .stat span{font-size:13px;color:var(--sub);font-weight:600}
-  .stat.y b{color:var(--ok)} .stat.m b{color:var(--maybe)} .stat.n b{color:var(--no)}
+  .warn{background:#FBEDE4;border:1px solid #E0BE9F;border-left:5px solid var(--main);border-radius:14px;padding:22px 26px;margin-top:20px}
+  .warn b{display:block;font-size:17px;color:var(--main);margin-bottom:8px}
+  .warn p{margin:0;font-size:16px;line-height:1.7;color:var(--ink2)}
 
-  .warnbanner{background:#FFF4ED;border:1px solid #E7C3AC;border-left:5px solid var(--main);border-radius:14px;padding:22px 28px;margin-top:16px}
-  .warnbanner b{display:block;font-size:16px;color:var(--main);margin-bottom:8px}
-  .warnbanner p{margin:0;font-size:15px;line-height:1.7;color:var(--ink2)}
-  .fixbox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:32px 40px}
-  .pill{display:inline-block;font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--main-soft);color:var(--main);margin-bottom:14px}
-  .why{font-size:16px;color:var(--ink2);margin:0 0 22px}
-  .diff{display:grid;gap:12px}
-  .diff div{border-radius:12px;padding:16px 20px;font-size:17px;line-height:1.55}
-  .diff .now{background:#F3F1EC;color:var(--sub);border:1px dashed var(--line)}
-  .diff .new{background:var(--main-soft);color:var(--ink);border:1px solid #E7D3C2;font-weight:600}
-  .diff label{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;margin-bottom:6px;color:var(--sub)}
-  .diff .new label{color:var(--main)}
+  .people-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+  .pp{text-align:center;width:56px}
+  .pp svg{width:46px;height:56px;display:block;margin:0 auto 6px}
+  .pp b{font-size:12px;font-weight:700;color:var(--ink2);letter-spacing:-.02em;display:block}
+  .pp i{font-size:11px;font-style:normal;color:var(--sub);display:block;margin-top:1px}
+  .verdict{font-size:32px;font-weight:800;letter-spacing:-.025em;line-height:1.4}
+  .verdict em{font-style:normal;color:var(--ok)}
+  .counts{display:flex;gap:22px;margin-top:14px;font-size:14px;font-weight:700;color:var(--ink2);flex-wrap:wrap}
+  .counts i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:7px;vertical-align:-1px}
 
-  .callouts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
-  .callout{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;font-size:15px}
-  .callout h3{font-size:13px;font-weight:700;color:var(--main);letter-spacing:.06em;margin:0 0 8px}
-  .callout p{margin:0;color:var(--ink2)}
+  .st{display:grid;grid-template-columns:104px 1fr auto;align-items:center;gap:16px;margin-bottom:12px}
+  .st .lb{font-size:15px;font-weight:700;text-align:right;color:var(--ink2)}
+  .st .track{background:#EDEAE3;border-radius:8px;height:34px;position:relative;overflow:hidden}
+  .st .fill{position:absolute;top:0;bottom:0;left:0;background:#BDB5A6;border-radius:8px}
+  .st .cnt{font-size:16px;font-weight:800;color:var(--ink2);min-width:52px}
+  .st.hot .lb,.st.hot .cnt{color:var(--main)}
+  .st.hot .fill{background:var(--main)}
+  .st.zero .cnt{color:#A8A296}
+  .note{font-size:14px;color:var(--sub);margin-top:16px;line-height:1.7}
 
-  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;border-top:4px solid var(--line)}
-  .card[data-verdict="yes"]{border-top-color:var(--ok)}
-  .card[data-verdict="no"]{border-top-color:var(--no)}
-  .card[data-verdict="maybe"]{border-top-color:var(--maybe)}
-  .card-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-  .avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex-shrink:0;color:#fff;background:var(--sub)}
-  .card[data-verdict="yes"] .avatar{background:var(--ok)}
-  .card[data-verdict="no"] .avatar{background:var(--no)}
-  .card[data-verdict="maybe"] .avatar{background:var(--maybe)}
-  .who{flex:1;min-width:0}
-  .who b{display:block;font-size:17px;font-weight:700}
-  .who small{display:block;font-size:13px;color:var(--sub);margin-top:1px}
-  .tags{display:flex;gap:6px;flex-shrink:0}
-  .tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
-  .card[data-verdict="yes"] .verdict{background:var(--ok-soft);color:var(--ok)}
-  .card[data-verdict="no"] .verdict{background:var(--no-soft);color:var(--no)}
-  .card[data-verdict="maybe"] .verdict{background:var(--maybe-soft);color:var(--maybe)}
-  .kind{background:#EFEDE7;color:var(--sub)}
-  .card[data-kind="near"] .kind{background:var(--main-soft);color:var(--main)}
-  .stop{font-size:13px;color:var(--sub);margin:0 0 14px;padding:8px 12px;background:#FBFAF7;border-radius:8px}
-  .stop b{color:var(--ink)}
-  .qa{margin:0;display:grid;grid-template-columns:64px 1fr;gap:8px 12px;font-size:14.5px}
-  .qa dt{color:var(--sub);font-weight:700;font-size:13px;padding-top:2px}
-  .qa dd{margin:0;color:var(--ink2)}
-  .fix{margin-top:16px;padding:12px 14px;background:var(--main-soft);border-left:3px solid var(--main);border-radius:0 8px 8px 0;font-size:14.5px;line-height:1.55}
-  .fix b{display:block;font-size:12px;color:var(--main);letter-spacing:.04em;margin-bottom:4px}
+  .now,.new{border-radius:12px;padding:18px 22px;font-size:17.5px;line-height:1.6}
+  .now{background:#F1EFEA;color:var(--sub);margin-bottom:12px}
+  .new{background:var(--main-soft);color:var(--ink);font-weight:600;border-left:4px solid var(--main)}
+  .now .lb,.new .lb{display:block;font-size:12px;font-weight:800;letter-spacing:.07em;margin-bottom:7px;color:var(--sub)}
+  .new .lb{color:var(--main)}
 
-  /* 추출 깔때기 */
-  .samp{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:32px 40px}
-  .funnel{display:grid;grid-template-columns:minmax(0,440px) 1fr;gap:28px;align-items:center}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .two h3{font-size:13px;font-weight:800;letter-spacing:.07em;color:var(--main);margin-bottom:8px}
+  .two p{font-size:15.5px;color:var(--ink2);line-height:1.75}
+
+  .per{border-top:1px solid var(--line);padding:22px 0}
+  .per:first-of-type{border-top:0;padding-top:4px}
+  .perhead{display:flex;align-items:center;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+  .perhead svg{width:34px;height:42px;flex-shrink:0}
+  .who{flex:1;min-width:150px}
+  .who b{font-size:18px;font-weight:800;letter-spacing:-.02em}
+  .who span{display:block;font-size:13.5px;color:var(--sub);margin-top:2px}
+  .badge{font-size:12.5px;font-weight:800;padding:6px 12px;border-radius:999px;white-space:nowrap}
+  .b-yes{background:var(--ok-soft);color:var(--ok)}
+  .b-no{background:var(--no-soft);color:var(--no)}
+  .b-maybe{background:var(--maybe-soft);color:var(--maybe)}
+  .b-kind{background:#EEEBE4;color:var(--sub);font-weight:700}
+  .say{font-size:17px;line-height:1.7;padding-left:48px}
+  .stopped{display:inline-block;font-size:12.5px;font-weight:800;color:var(--main);background:var(--main-soft);padding:3px 9px;border-radius:6px;margin-bottom:8px}
+  details{padding-left:48px;margin-top:12px}
+  summary{font-size:13.5px;color:var(--main);font-weight:700;cursor:pointer;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"＋ 다섯 질문 답 보기"}
+  details[open] summary::before{content:"－ 접기"}
+  .qa{display:grid;grid-template-columns:76px 1fr;gap:9px 14px;font-size:15px;margin-top:12px;color:var(--ink2);line-height:1.75}
+  .qa dt{color:var(--sub);font-weight:700;font-size:13px;padding-top:3px}
+  .qa dd{margin:0}
+
+  .funnel{display:grid;grid-template-columns:minmax(0,400px) 1fr;gap:26px;align-items:center}
   .fbands{display:flex;flex-direction:column;gap:6px}
-  .fband{height:64px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:22px;letter-spacing:-.01em;margin:0 auto;width:100%}
-  .fband:nth-child(1){width:100%;background:#C9B9A7;clip-path:polygon(0 0,100% 0,94% 100%,6% 100%)}
-  .fband:nth-child(2){width:88%;background:#B08968;clip-path:polygon(0 0,100% 0,92% 100%,8% 100%)}
-  .fband:nth-child(3){width:72%;background:#9A5427;clip-path:polygon(0 0,100% 0,89% 100%,11% 100%)}
-  .fband:nth-child(4){width:52%;background:var(--ok);clip-path:polygon(0 0,100% 0,84% 100%,16% 100%)}
-  .fband small{font-size:12px;font-weight:600;opacity:.9;margin-left:8px}
+  .fband{height:58px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px;margin:0 auto;width:100%}
+  .fband:nth-child(1){background:#C6B8A6;clip-path:polygon(0 0,100% 0,94% 100%,6% 100%)}
+  .fband:nth-child(2){width:86%;background:#A97C55;clip-path:polygon(0 0,100% 0,92% 100%,8% 100%)}
+  .fband:nth-child(3){width:70%;background:var(--main);clip-path:polygon(0 0,100% 0,89% 100%,11% 100%)}
+  .fband:nth-child(4){width:50%;background:var(--ok);clip-path:polygon(0 0,100% 0,84% 100%,16% 100%)}
+  .fband small{font-size:12px;font-weight:600;opacity:.9;margin-left:6px}
   .flabels{display:flex;flex-direction:column;gap:6px}
-  .flabel{height:64px;display:flex;flex-direction:column;justify-content:center;font-size:14.5px;line-height:1.4}
+  .flabel{height:58px;display:flex;flex-direction:column;justify-content:center;font-size:14.5px;line-height:1.45}
   .flabel b{font-size:15px}
   .flabel span{color:var(--sub)}
-  .cond{width:100%;border-collapse:collapse;margin-top:26px;font-size:14.5px}
-  .cond th{text-align:left;font-size:12px;letter-spacing:.06em;color:var(--sub);font-weight:700;padding:0 10px 8px 0;border-bottom:1px solid var(--line)}
-  .cond td{padding:10px 10px 10px 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
-  .cond td:first-child{color:var(--ink);font-weight:600;width:28%}
+  .cond{width:100%;border-collapse:collapse;margin-top:26px;font-size:15px}
+  .cond th{text-align:left;font-size:12px;letter-spacing:.06em;color:var(--sub);font-weight:800;padding:0 12px 9px 0;border-bottom:1px solid var(--line)}
+  .cond td{padding:12px 12px 12px 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2)}
+  .cond td:first-child{color:var(--ink);font-weight:700;width:27%}
   .cond tr:last-child td{border-bottom:0}
-  .notes{margin:18px 0 0;padding:0;list-style:none;font-size:14px;color:var(--ink2)}
-  .notes li{padding:4px 0 4px 14px;position:relative}
-  .notes li::before{content:"";position:absolute;left:0;top:13px;width:6px;height:6px;border-radius:50%;background:var(--main)}
-  details.cands{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
-  details.cands summary{cursor:pointer;font-size:14px;font-weight:700;color:var(--main);list-style:none}
-  details.cands summary::before{content:"+ ";}
-  details.cands[open] summary::before{content:"- ";}
-  .cands table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
-  .cands td,.cands th{padding:5px 8px 5px 0;border-bottom:1px solid #EFEDE7;text-align:left;color:var(--ink2)}
-  .cands th{font-size:11.5px;color:var(--sub);letter-spacing:.04em}
-  .cands tr.picked td{color:var(--ink);font-weight:600;background:var(--main-soft)}
-  @media (max-width:720px){ .samp{padding:24px 22px} .funnel{grid-template-columns:1fr} .fband{height:52px;font-size:18px} .flabel{height:auto;padding:2px 0} }
+  .notes{margin:18px 0 0;padding:0;list-style:none;font-size:15px;color:var(--ink2)}
+  .notes li{padding:5px 0 5px 15px;position:relative;line-height:1.7}
+  .notes li::before{content:"";position:absolute;left:0;top:14px;width:6px;height:6px;border-radius:50%;background:var(--main)}
+  details.cands{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;padding-left:0}
+  details.cands summary::before{content:""}
+  details.cands[open] summary::before{content:""}
+  .cands table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+  .cands td,.cands th{padding:7px 10px 7px 0;border-bottom:1px solid #F0EDE6;text-align:left;color:var(--ink2)}
+  .cands th{font-size:12px;color:var(--sub);letter-spacing:.04em;font-weight:800}
+  .cands tr.picked td{color:var(--ink);font-weight:700;background:var(--main-soft)}
 
-  .qs{display:grid;gap:12px}
-  .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;display:flex;gap:16px;align-items:flex-start;font-size:16px}
-  .q i{font-style:normal;font-weight:800;color:var(--main);font-size:20px;line-height:1.3;flex-shrink:0}
-  .disclaimer{font-size:15px;color:var(--ink2);margin:0 0 16px}
+  .qs{display:grid;gap:0}
+  .q{display:flex;gap:16px;align-items:flex-start;font-size:16.5px;line-height:1.7;padding:16px 0;border-top:1px solid var(--line)}
+  .q:first-child{border-top:0;padding-top:4px}
+  .q i{font-style:normal;font-weight:800;color:var(--main);font-size:20px;flex-shrink:0;line-height:1.4}
+  .ref{margin-top:24px;font-size:13.5px;color:var(--sub);line-height:1.7}
+  .ref b{color:var(--ink2)}
+  footer{margin-top:20px;font-size:12.5px;color:var(--sub);line-height:1.7}
 
-  footer{margin-top:64px;font-size:12.5px;color:var(--sub);border-top:1px solid var(--line);padding-top:16px;line-height:1.7}
-
-  @media (max-width:720px){
-    .wrap{padding:36px 18px 72px}
+  @media (max-width:680px){
+    body{font-size:16px}
+    .wrap{padding:28px 16px 60px}
+    .card{padding:24px 20px}
     h1{font-size:26px}
-    .hero,.fixbox{padding:24px 22px}
-    .bignum{font-size:64px}
-    .hero-top p{font-size:18px}
-    .stats{gap:8px}
-    .stat b{font-size:20px}
-    .callouts,.cards{grid-template-columns:1fr}
+    .verdict{font-size:24px}
+    .st{grid-template-columns:78px 1fr auto;gap:10px}
+    .two,.funnel{grid-template-columns:1fr}
+    .say,details{padding-left:0}
     .qa{grid-template-columns:1fr}
+    .fband{height:48px;font-size:17px}
+    .flabel{height:auto;padding:4px 0}
   }
-  @media print{ body{background:#fff} .card,.hero,.fixbox,.callout,.q{break-inside:avoid;box-shadow:none} }
+  @media print{
+    body{background:#fff}
+    .card{break-inside:avoid;border-color:#DDD}
+    details > summary{display:none}
+  }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="pp" viewBox="0 0 24 30"><circle cx="12" cy="6.4" r="5.4"/><path d="M12 13.6c-5.2 0-8.8 3.1-8.8 7.8V29.4h17.6V21.4c0-4.7-3.6-7.8-8.8-7.8z"/></symbol></svg>
 <div class="wrap">
 
-<header>
-  <div class="eyebrow">AI 고객 페르소나 사전검증</div>
-  <h1>가정통신문 정리 서비스</h1>
-  <div class="meta">2026-09-14 · 기획서 기획서.md · 페이지 index.html · Claude로 9분 걸림</div>
-  <div class="refnote"><b>참고 자료입니다.</b> 통계로 만든 가상 인물 7명의 추정 반응입니다. 실제 고객 조사를 대신하지 않습니다. 아래 숫자는 판정이 아니라 어느 문장을 다시 볼지 고르는 힌트로 쓰세요.</div>
-</header>
+<div class="top"><span class="name">AI 고객 페르소나 사전검증</span><span class="run">Claude로 9분 걸림 · 2026-09-14</span></div>
+<h1>가정통신문 정리 서비스</h1>
+<div class="sub">기획서 기획서.md · 페이지 index.html · 가상 인물 7명 인터뷰</div>
+<div class="card">
+  <div class="people-row">
 
-<section class="hero">
-  <div class="hero-top">
-    <div class="bignum">2<small>/ 7</small></div>
-    <p>명이 신청 버튼을 누릅니다.</p>
+    <div class="pp"><svg fill="#0E6E66"><use href="#pp"/></svg><b>남주경</b><i>40</i></div>
+
+
+    <div class="pp"><svg fill="#0E6E66"><use href="#pp"/></svg><b>인미랑</b><i>37</i></div>
+
+
+    <div class="pp"><svg fill="#9A6410"><use href="#pp"/></svg><b>김준호</b><i>40</i></div>
+
+
+    <div class="pp"><svg fill="#9A6410"><use href="#pp"/></svg><b>박성희</b><i>40</i></div>
+
+
+    <div class="pp"><svg fill="#9A6410"><use href="#pp"/></svg><b>주정은</b><i>43</i></div>
+
+
+    <div class="pp"><svg fill="#A8221B"><use href="#pp"/></svg><b>박미</b><i>50</i></div>
+
+
+    <div class="pp"><svg fill="#A8221B"><use href="#pp"/></svg><b>서영은</b><i>39</i></div>
+
   </div>
-  <div class="bar" aria-label="누른다 2, 모르겠다 3, 안 누른다 2">
-    <span class="y" style="width:calc(2 / 7 * 100%)"></span>
-    <span class="m" style="width:calc(3 / 7 * 100%)"></span>
-    <span class="n" style="width:calc(2 / 7 * 100%)"></span>
+  <p class="verdict">7명 중 <em>2명</em>이 신청 버튼을 누릅니다.</p>
+  <div class="counts">
+    <span><i style="background:var(--ok)"></i>누른다 2</span>
+    <span><i style="background:var(--maybe)"></i>모르겠다 3</span>
+    <span><i style="background:var(--no)"></i>안 누른다 2</span>
   </div>
-  <div class="stats">
-    <div class="stat y"><b>2</b><span>누른다</span></div>
-    <div class="stat m"><b>3</b><span>모르겠다</span></div>
-    <div class="stat n"><b>2</b><span>안 누른다</span></div>
+</div>
+
+<div class="card">
+  <div class="kick">어디서 멈췄나</div>
+  <div class="lead">신청하지 않았거나 망설인 핵심 타깃 3명이 읽다가 멈춘 지점</div>
+
+  <div class="st zero"><span class="lb">첫 화면</span><span class="track"><span class="fill" style="width:0%"></span></span><span class="cnt">0명</span></div>
+
+
+  <div class="st zero"><span class="lb">차이</span><span class="track"><span class="fill" style="width:0%"></span></span><span class="cnt">0명</span></div>
+
+
+  <div class="st hot"><span class="lb">무료 제안</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="cnt">2명</span></div>
+
+
+  <div class="st "><span class="lb">신청 항목</span><span class="track"><span class="fill" style="width:50%"></span></span><span class="cnt">1명</span></div>
+
+  <p class="note">모르겠다고 한 3명 중 2명(김준호, 주정은)이 여기서 멈췄다. 3장 보내면 무엇이 언제 오는지, 한 번인지 계속인지, 어디로 보내는지가 없다. 누른 2명도 같은 걸 걸렸다고 했다.</p>
+</div>
+
+<div class="card">
+  <div class="kick">먼저 고칠 것 하나</div>
+  <div class="lead">무료 제안 구간의 이 문장을 바꾸세요</div>
+  <div class="now"><span class="lb">지금</span>가정통신문 3장을 보내 주시면, 일정·준비물 정리표를 만들어 하루 안에 카톡으로 보내 드립니다.</div>
+  <div class="new"><span class="lb">이렇게</span>가정통신문 3장을 카톡으로 찍어 보내 주시면, 하루 안에 날짜별 일정·준비물 정리표를 카톡으로 돌려 드립니다.</div>
+</div>
+
+<div class="card">
+  <div class="two">
+
+    <div><h3>신청 항목</h3><p>박성희 씨가 이메일 항목에서 멈췄다. 카톡으로 결과를 주는 서비스이므로 폼 질문을 이름, 아이 학년 2개로 줄이거나 이메일 항목을 빼고 카톡 연락처로 바꿔라.</p></div>
+
+    <div><h3>타깃 범위</h3><p>인접 세그먼트 2명(50세 경리, 39세 전업 부모)은 둘 다 불편 자체가 없다고 했다. 타깃은 넓히지 말고 &#x27;초등 저학년 맞벌이&#x27;로 좁게 유지하는 게 맞다.</p></div>
   </div>
-</section>
-<section class="sec">
-  <div class="sec-h"><h2>먼저 고칠 것 하나</h2><span>가장 많이 걸린 곳에서 문장 하나만 바꿉니다</span></div>
-  <div class="fixbox">
-    <span class="pill">무료 제안</span>
-    <p class="why">모르겠다고 한 3명 중 2명(김준호, 주정은)이 여기서 멈췄다. 3장 보내면 무엇이 언제 오는지, 한 번인지 계속인지, 어디로 보내는지가 없다. 누른 2명도 같은 걸 걸렸다고 했다.</p>
-    <div class="diff">
-      <div class="now"><label>지금</label>가정통신문 3장을 보내 주시면, 일정·준비물 정리표를 만들어 하루 안에 카톡으로 보내 드립니다.</div>
-      <div class="new"><label>제안</label>가정통신문 3장을 카톡으로 찍어 보내 주시면, 하루 안에 날짜별 일정·준비물 정리표를 카톡으로 돌려 드립니다.</div>
+</div>
+
+<div class="card">
+  <div class="kick">7명이 남긴 말</div>
+  <div class="lead">핵심 타깃 5명과, 타깃 범위를 확인하려고 넣은 인접 세그먼트 2명</div>
+
+
+  <div class="per">
+    <div class="perhead"><svg fill="#A8221B"><use href="#pp"/></svg>
+      <span class="who"><b>박미</b><span>50세 여자 · 경기 시흥시 · 경리 사무원</span></span>
+      <span class="badge b-kind">인접 세그먼트</span><span class="badge b-no">안 누른다</span></div>
+    <div class="say"><span class="stopped">첫 화면에서 멈춤</span><br>"저한테 맞는 말은 없어요. 초등 저학년 부모라고 앞에 딱 써 두면 저 같은 사람은 헷갈리지 않고 지나갈 거예요."</div>
+    <details>
+      <summary></summary>
+      <dl class="qa">
+        <dt>불편</dt><dd>지금은 없어요. 애들이 커서 통신문 챙길 나이는 지났어요. 애들 어릴 때 혼자 키우면서 준비물 놓친 적은 있었죠.</dd>
+        <dt>지금 방법</dt><dd>그때는 애들한테 직접 물어봤어요. 단톡방 같은 건 없었고요. 지금은 그럴 일이 없어요.</dd>
+        <dt>차이</dt><dd>제 일이 아니라 의미는 없어요. 다만 결산 오차 잡듯이 놓친 걸 잡아 준다는 건 이해가 돼요.</dd>
+        <dt>가격</dt><dd>안 내요. 필요가 없으니까요. 애들 어릴 때였으면 5천 원 정도는 생각했을 거예요.</dd>
+        <dt>페이지</dt><dd>안 눌러요. 첫 화면에서 &#x27;내일 준비물&#x27;이라는 말에서 제 얘기가 아니라고 느꼈어요.</dd>
+      </dl>
+    </details>
+  </div>
+
+
+  <div class="per">
+    <div class="perhead"><svg fill="#A8221B"><use href="#pp"/></svg>
+      <span class="who"><b>서영은</b><span>39세 여자 · 서울 구로구 · 무직</span></span>
+      <span class="badge b-kind">인접 세그먼트</span><span class="badge b-no">안 누른다</span></div>
+    <div class="say"><span class="stopped">첫 화면에서 멈춤</span><br>"저 같은 사람은 대상이 아니에요. 다만 &#x27;아이가 여럿이거나 어른을 같이 돌보는 집&#x27;이라고 하면 한 번은 읽어 봤을 거예요."</div>
+    <details>
+      <summary></summary>
+      <dl class="qa">
+        <dt>불편</dt><dd>거의 없어요. 낮에 집에 있어서 통신문은 오는 날 바로 읽고 독서 목록 정리하듯 표로 옮겨요. 아버지 병원이랑 겹치는 날은 좀 밀리긴 해요.</dd>
+        <dt>지금 방법</dt><dd>제가 직접 엑셀에 정리해요. 귀찮다기보다 제 방식이 있어서 남한테 맡기는 게 오히려 불안해요.</dd>
+        <dt>차이</dt><dd>제 기준으로는 제가 하는 게 더 꼼꼼해요. 남이 골라 준 걸 다시 확인할 것 같아서 차이가 크지 않아요.</dd>
+        <dt>가격</dt><dd>안 내요. 지금 수입이 없고, 제가 할 수 있는 일에 돈을 쓰는 건 아까워요.</dd>
+        <dt>페이지</dt><dd>안 눌러요. 첫 화면 &#x27;퇴근하고&#x27;에서 저는 아니구나 싶었어요. 맞벌이 집 얘기죠.</dd>
+      </dl>
+    </details>
+  </div>
+
+
+  <div class="per">
+    <div class="perhead"><svg fill="#9A6410"><use href="#pp"/></svg>
+      <span class="who"><b>김준호</b><span>40세 남자 · 서울 강동구 · 네트워크 프로그래머</span></span>
+      <span class="badge b-kind">핵심 타깃</span><span class="badge b-maybe">모르겠다</span></div>
+    <div class="say"><span class="stopped">무료 제안에서 멈춤</span><br>"3장 보내면 정확히 뭐가 언제 오는지 한 줄이면 돼요. &#x27;월요일에 보내면 화요일 저녁 전에 이번 주 표가 온다&#x27; 같은 식으로요."</div>
+    <details>
+      <summary></summary>
+      <dl class="qa">
+        <dt>불편</dt><dd>있긴 해요. 장애 나면 밤새는 날이 있어서 그 주는 아내가 다 챙기고, 저는 아침에 &#x27;오늘 뭐 가져가?&#x27; 물어보는 쪽이에요.</dd>
+        <dt>지금 방법</dt><dd>아내가 단톡방에서 확인해요. 저한테는 귀찮다기보다 제가 안 하는 일이라, 아내가 얼마나 귀찮은지는 잘 몰라요.</dd>
+        <dt>차이</dt><dd>사진 보내면 골라 준다는 건 이해가 돼요. 근데 학교 앱 알림이랑 뭐가 다른지는 &#x27;사람이 골라 준다&#x27;는 것 말고는 안 보여요.</dd>
+        <dt>가격</dt><dd>4,900원은 금액 자체는 문제 없어요. 다만 뭘 얼마나 정확히 걸러 주는지 모르면 아내한테 권하기 어려워요.</dd>
+        <dt>페이지</dt><dd>모르겠어요. 무료 제안에서 멈췄어요. &#x27;하루 안에&#x27;가 언제 기준인지, 3장 보내면 그 뒤 통신문도 봐 주는 건지가 없어요. 서비스 만드는 입장에서 보면 범위가 안 적혀 있어요.</dd>
+      </dl>
+    </details>
+  </div>
+
+
+  <div class="per">
+    <div class="perhead"><svg fill="#9A6410"><use href="#pp"/></svg>
+      <span class="who"><b>주정은</b><span>43세 여자 · 광주 북구 · 그 외 일반 영업원</span></span>
+      <span class="badge b-kind">핵심 타깃</span><span class="badge b-maybe">모르겠다</span></div>
+    <div class="say"><span class="stopped">무료 제안에서 멈춤</span><br>"무료로 한 번 해 주는 건지 계속 봐 주는 건지 적혀 있으면 눌러요. 그리고 통신문을 어디로 보내는지도요."</div>
+    <details>
+      <summary></summary>
+      <dl class="qa">
+        <dt>불편</dt><dd>있어요. 낮에 고객 만나느라 밖에 있으니까 통신문은 저녁에 봐요. 애들 학원 시간표는 제가 다 꿰는데 학교 준비물은 가끔 빠져요.</dd>
+        <dt>지금 방법</dt><dd>단톡방이에요. 엄마들이 빨라서 물어보면 금방 답 와요. 귀찮다기보다 못 물어볼 때가 문제죠, 밤늦게는 못 물어보니까.</dd>
+        <dt>차이</dt><dd>차이는 알겠어요. 근데 저는 단톡방이 잘 돌아가는 편이라 큰 차이는 아니에요. 대신 사진만 보내면 된다는 건 편해 보여요.</dd>
+        <dt>가격</dt><dd>4,900원이면 보험 하나 설계하는 마음으로 따져 봐야죠. 단톡방이 공짜인데 그보다 확실히 나아야 내요. 크몽 건당은 안 써 봤어요.</dd>
+        <dt>페이지</dt><dd>모르겠어요. 무료 제안까지는 읽었는데 &#x27;3장 보내면 하루 안에&#x27;라는 게, 통신문은 매주 오는데 딱 한 번 정리해 주고 끝인 건지 알 수 없어서 멈췄어요.</dd>
+      </dl>
+    </details>
+  </div>
+
+
+  <div class="per">
+    <div class="perhead"><svg fill="#9A6410"><use href="#pp"/></svg>
+      <span class="who"><b>박성희</b><span>40세 여자 · 울산 북구 · 산업용로봇 조작원</span></span>
+      <span class="badge b-kind">핵심 타깃</span><span class="badge b-maybe">모르겠다</span></div>
+    <div class="say"><span class="stopped">신청 항목에서 멈춤</span><br>"이메일 대신 카톡 번호나 아이디만 받으면 바로 눌러요. 이름이랑 학년은 괜찮아요."</div>
+    <details>
+      <summary></summary>
+      <dl class="qa">
+        <dt>불편</dt><dd>있어요. 라인 근무라 퇴근하면 아버지 식사부터 애 숙제까지 다 챙겨야 해요. 통신문은 가방 바닥에서 구겨진 채로 나올 때가 있어요.</dd>
+        <dt>지금 방법</dt><dd>남편이랑 서로 봤냐고 묻다가 티격태격해요. 결국 제가 밤에 수첩에 적어요. 점검 수첩처럼요. 귀찮은데 안 하면 애가 곤란하니까요.</dd>
+        <dt>차이</dt><dd>전날 저녁에 카톡 오는 건 좋아요. 남편이랑 누가 봤네 안 봤네 할 일이 없어지니까. 학교 앱은 알림이 너무 많아서 꺼 놨어요.</dd>
+        <dt>가격</dt><dd>4,900원은 지금 형편에 고민되는 돈이에요. 자격증 공부하는 것도 급여 때문이라. 무료로 써 보고 진짜 편하면 낼 수도 있어요.</dd>
+        <dt>페이지</dt><dd>모르겠어요. 신청 항목에서 멈췄어요. 카톡으로 보내 준다면서 이메일을 쓰라고 하는데, 저는 이메일을 거의 안 열어요. 뭐가 오는지 모르니 적기 싫어요.</dd>
+      </dl>
+    </details>
+  </div>
+
+
+  <div class="per">
+    <div class="perhead"><svg fill="#0E6E66"><use href="#pp"/></svg>
+      <span class="who"><b>인미랑</b><span>37세 여자 · 경기 성남시 중원구 · 인쇄 관련 기능 종사원</span></span>
+      <span class="badge b-kind">핵심 타깃</span><span class="badge b-yes">누른다</span></div>
+    <div class="say">"이메일은 잘 안 열어 봐요. 카톡으로 준다면서 이메일은 왜 받는지 한 줄만 있으면 좋겠어요."</div>
+    <details>
+      <summary></summary>
+      <dl class="qa">
+        <dt>불편</dt><dd>있어요. 공장에서 정시 퇴근해도 집에 오면 애 씻기고 알림장 보는 게 한 세트라, 통신문은 대충 넘기다가 아침에 &#x27;준비물 있었네&#x27; 할 때가 있어요.</dd>
+        <dt>지금 방법</dt><dd>알림장이랑 통신문을 밤에 다시 뒤져요. 애 재우고 웹툰 보는 시간 빼서 하는 거라 솔직히 귀찮아요.</dd>
+        <dt>차이</dt><dd>의미 있어요. 저는 오탈자 잡는 게 일이라 서류 보는 건 익숙한데, 문제는 볼 시간이 없는 거거든요. 전날 저녁에 카톡 하나 오면 그걸로 끝이면 좋죠.</dd>
+        <dt>가격</dt><dd>월 4,900원이면 낼 것 같아요. 학교 앱 유료는 안 써요. 다만 진짜 놓친 게 줄어야 계속 내겠죠.</dd>
+        <dt>페이지</dt><dd>눌러요. 첫 화면이 딱 제 얘기라 아래까지 읽었고, 무료로 3장 보내는 건 부담이 없어요.</dd>
+      </dl>
+    </details>
+  </div>
+
+
+  <div class="per">
+    <div class="perhead"><svg fill="#0E6E66"><use href="#pp"/></svg>
+      <span class="who"><b>남주경</b><span>40세 여자 · 경기 안산시 단원구 · 일반 비서</span></span>
+      <span class="badge b-kind">핵심 타깃</span><span class="badge b-yes">누른다</span></div>
+    <div class="say">"어디로 보내는지가 없어요. 카톡 채널인지 번호인지 버튼 옆에 있었으면 바로 보냈을 거예요."</div>
+    <details>
+      <summary></summary>
+      <dl class="qa">
+        <dt>불편</dt><dd>있어요. 회사에서는 임원 일정 하나 안 놓치는데 집에 오면 애 통신문은 식탁에 쌓여 있어요. 바이어 온 주에는 아예 못 봐요.</dd>
+        <dt>지금 방법</dt><dd>주말에 몰아서 읽고 냉장고에 붙여요. 중간에 오는 건 놓치고, 그러면 아침에 남편이랑 서로 미루게 돼요.</dd>
+        <dt>차이</dt><dd>달라요. 지금은 제가 읽고 제가 골라내야 하는데, 골라 주는 게 핵심이에요. 단톡방은 제가 잘 안 봐서 별 도움이 안 됐어요.</dd>
+        <dt>가격</dt><dd>4,900원은 내요. 학교 앱 유료 3,900원은 알림만 오지 정리는 안 해 주잖아요. 크몽 건당 5,000원은 매주 맡기기엔 번거로워요.</dd>
+        <dt>페이지</dt><dd>눌러요. 무료로 3장 보내서 결과물 보고 정하면 되니까요. 아이 학년 묻는 것도 당연해 보여요.</dd>
+      </dl>
+    </details>
+  </div>
+
+
+</div>
+
+<div class="card">
+  <div class="kick">이 7명은 어떻게 뽑았나</div>
+  <div class="lead">NVIDIA Nemotron-Personas-Korea 100만 명에서 검색</div>
+  <div class="funnel">
+    <div class="fbands">
+      <div class="fband">1,000,000<small>명</small></div>
+      <div class="fband">116,552<small>명</small></div>
+      <div class="fband">37<small>명</small></div>
+      <div class="fband">7<small>명</small></div>
+    </div>
+    <div class="flabels">
+      <div class="flabel"><b>가상 한국인 전체</b><span>NVIDIA Nemotron-Personas-Korea. 통계청·대법원·건강보험공단 통계로 만든 가상 인물. CC BY 4.0</span></div>
+      <div class="flabel"><b>조건에 맞는 사람</b><span>30~45세, 배우자 있음, 자녀와 거주 (지역·성별 조건 없음)</span></div>
+      <div class="flabel"><b>프로필을 받은 후보</b><span>116,552명 중 무작위 40명 요청, 37명 수신 (3명 실패)</span></div>
+      <div class="flabel"><b>인터뷰한 7명</b><span>핵심 타깃 5명은 직업·지역·성별이 겹치지 않는 일하는 부모로. 인접 세그먼트 2명은 나이 축(50대), 직업 축(무직, 집에 있는 부모)을 하나씩 벗어나게</span></div>
     </div>
   </div>
-  <div class="callouts">
-    <div class="callout" id="form"><h3>신청 항목</h3><p>박성희 씨가 이메일 항목에서 멈췄다. 카톡으로 결과를 주는 서비스이므로 폼 질문을 이름, 아이 학년 2개로 줄이거나 이메일 항목을 빼고 카톡 연락처로 바꿔라.</p></div>
-    <div class="callout"><h3>인접 세그먼트가 말해 주는 것</h3><p>인접 세그먼트 2명(50세 경리, 39세 전업 부모)은 둘 다 불편 자체가 없다고 했다. 타깃은 넓히지 말고 &#x27;초등 저학년 맞벌이&#x27;로 좁게 유지하는 게 맞다.</p></div>
-  </div>
-</section>
+  <table class="cond">
+    <thead><tr><th>기획서의 누구</th><th>검색 조건</th><th>결과</th></tr></thead>
+    <tbody>
 
-<section class="sec">
-  <div class="sec-h"><h2>이 7명은 어떻게 뽑았나</h2><span>NVIDIA Nemotron-Personas-Korea 100만 명에서 검색</span></div>
-  <div class="samp">
-    <div class="funnel">
-      <div class="fbands">
-        <div class="fband">1,000,000<small>명</small></div>
-        <div class="fband">116,552<small>명</small></div>
-        <div class="fband">37<small>명</small></div>
-        <div class="fband">7<small>명</small></div>
-      </div>
-      <div class="flabels">
-        <div class="flabel"><b>가상 한국인 전체</b><span>NVIDIA Nemotron-Personas-Korea. 통계청·대법원·건강보험공단 통계로 만든 가상 인물. CC BY 4.0</span></div>
-        <div class="flabel"><b>조건에 맞는 사람</b><span>30~45세, 배우자 있음, 자녀와 거주 (지역·성별 조건 없음)</span></div>
-        <div class="flabel"><b>프로필을 받은 후보</b><span>116,552명 중 무작위 40명 요청, 37명 수신 (3명 실패)</span></div>
-        <div class="flabel"><b>인터뷰한 7명</b><span>핵심 타깃 5명은 직업·지역·성별이 겹치지 않는 일하는 부모로. 인접 세그먼트 2명은 나이 축(50대), 직업 축(무직, 집에 있는 부모)을 하나씩 벗어나게</span></div>
-      </div>
-    </div>
-    <table class="cond">
-      <thead><tr><th>기획서의 누구</th><th>검색 조건</th><th>결과</th></tr></thead>
+      <tr><td>초등 1~2학년 자녀가 있는 맞벌이 부모</td><td>--age 30-45 --family 자녀 --marital 배우자있음</td><td>116,552명 매칭, 37명 수신. 그중 직업이 있는(무직 아닌) 사람 30명에서 5명</td></tr>
+
+
+      <tr><td>인접 세그먼트 1 (연령 축)</td><td>--age 50-58 --family 자녀 --marital 배우자있음</td><td>85,723명 매칭, 5명 수신 중 1명 (박미, 50세 경리 사무원)</td></tr>
+
+
+      <tr><td>인접 세그먼트 2 (직업 축)</td><td>--age 30-45 --family 자녀 --marital 배우자있음 --occupation 무직</td><td>22,233명 매칭, 5명 수신 중 1명 (서영은, 39세 무직)</td></tr>
+
+    </tbody>
+  </table>
+  <ul class="notes">
+
+    <li>자녀의 나이와 학년은 프로필에 없다. &#x27;초등 1~2학년&#x27;은 30~45세 + 자녀 동거로 대체했고, 학년은 모르는 채로 뒀다.</li>
+
+
+    <li>배우자가 일하는지는 알 수 없다. &#x27;맞벌이&#x27;는 &#x27;본인이 일하는 부모&#x27;로 읽었고, 아빠 2명도 넣었다.</li>
+
+
+    <li>색인에는 &#x27;맞벌이&#x27; 키워드가 없어 직업 없음(무직)을 제외하는 방식으로 걸렀다. 지역은 기획서에 없어 조건을 걸지 않았다.</li>
+
+  </ul>
+  <details class="cands">
+    <summary>후보 47명 전체 보기 · 색이 칠해진 사람이 인터뷰한 7명</summary>
+    <table>
+      <thead><tr><th>이름</th><th>나이</th><th>성별</th><th>지역</th><th>직업</th><th>가족</th></tr></thead>
       <tbody>
 
-        <tr><td>초등 1~2학년 자녀가 있는 맞벌이 부모</td><td>--age 30-45 --family 자녀 --marital 배우자있음</td><td>116,552명 매칭, 37명 수신. 그중 직업이 있는(무직 아닌) 사람 30명에서 5명</td></tr>
+        <tr class=""><td>전정표</td><td>39</td><td>남자</td><td>경기 부천시 오정구</td><td>전직 그 외 하역 및 적재 단순 종사원, 현재 구직중</td><td>배우자·자녀와 거주</td></tr>
 
 
-        <tr><td>인접 세그먼트 1 (연령 축)</td><td>--age 50-58 --family 자녀 --marital 배우자있음</td><td>85,723명 매칭, 5명 수신 중 1명 (박미, 50세 경리 사무원)</td></tr>
+        <tr class=""><td>김가람</td><td>38</td><td>남자</td><td>부산 사하구</td><td>총무 사무원</td><td>배우자·자녀와 거주</td></tr>
 
 
-        <tr><td>인접 세그먼트 2 (직업 축)</td><td>--age 30-45 --family 자녀 --marital 배우자있음 --occupation 무직</td><td>22,233명 매칭, 5명 수신 중 1명 (서영은, 39세 무직)</td></tr>
+        <tr class="picked"><td>김준호</td><td>40</td><td>남자</td><td>서울 강동구</td><td>네트워크 프로그래머</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class="picked"><td>인미랑</td><td>37</td><td>여자</td><td>경기 성남시 중원구</td><td>인쇄 관련 기능 종사원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>유은주</td><td>43</td><td>여자</td><td>경기 부천시 소사구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>장나영</td><td>36</td><td>여자</td><td>부산 해운대구</td><td>상담 전문가</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>이선영</td><td>37</td><td>여자</td><td>대구 달서구</td><td>전기 용접원</td><td>배우자·자녀·부모와 거주</td></tr>
+
+
+        <tr class=""><td>성규현</td><td>38</td><td>남자</td><td>충청남 보령시</td><td>육군 장교</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class="picked"><td>주정은</td><td>43</td><td>여자</td><td>광주 북구</td><td>그 외 일반 영업원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>이재근</td><td>36</td><td>남자</td><td>서울 서대문구</td><td>그 외 물품 이동 장비 조작원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>윤혜준</td><td>43</td><td>여자</td><td>경기 용인시 기흥구</td><td>행사 및 홍보 도우미</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>유원영</td><td>42</td><td>남자</td><td>충청남 서산시</td><td>건물 경비원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>문초희</td><td>31</td><td>여자</td><td>전라남 담양군</td><td>해외 영업원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>조승남</td><td>42</td><td>남자</td><td>경상남 양산시</td><td>생산관리 사무원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>황보형수</td><td>42</td><td>남자</td><td>경기 안양시 동안구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>최수진</td><td>35</td><td>여자</td><td>서울 강남구</td><td>토목 제도사</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>장태선</td><td>30</td><td>남자</td><td>경기 남양주시</td><td>금속기계 부품 조립원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>서시윤</td><td>30</td><td>여자</td><td>부산 동래구</td><td>사무 보조원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>이빛나</td><td>36</td><td>여자</td><td>경상북 포항시 북구</td><td>미술관·박물관 해설 및 안내원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>김경식</td><td>45</td><td>남자</td><td>서울 영등포구</td><td>한식 조리사</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class="picked"><td>박성희</td><td>40</td><td>여자</td><td>울산 북구</td><td>산업용로봇 조작원</td><td>배우자·자녀·아버지와 거주</td></tr>
+
+
+        <tr class=""><td>양지인</td><td>45</td><td>여자</td><td>부산 연제구</td><td>그 외 냉동·냉장·공조기 설치 및 정비원</td><td>배우자·자녀·어머니와 거주</td></tr>
+
+
+        <tr class=""><td>우유진</td><td>37</td><td>남자</td><td>경상남 양산시</td><td>공공행정 사무원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>황혜진</td><td>39</td><td>여자</td><td>부산 영도구</td><td>관광버스 운전원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class="picked"><td>남주경</td><td>40</td><td>여자</td><td>경기 안산시 단원구</td><td>일반 비서</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>김지영</td><td>35</td><td>여자</td><td>울산 북구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>박완기</td><td>43</td><td>남자</td><td>경상북 포항시 남구</td><td>전자계측 제어 기술자 및 연구원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>김성민</td><td>37</td><td>남자</td><td>전라남 무안군</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>이정관</td><td>36</td><td>남자</td><td>서울 강남구</td><td>연예인 매니저</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>임지현</td><td>32</td><td>여자</td><td>경기 하남시</td><td>통신장비 기술자 및 연구원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>정솔지</td><td>35</td><td>여자</td><td>울산 울주군</td><td>조사 전문가</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>김승현</td><td>37</td><td>남자</td><td>경상남 창원시 마산합포구</td><td>그 외 건설·전기 및 생산 관련 관리자</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>조용기</td><td>35</td><td>남자</td><td>대구 달성군</td><td>그 외 교육 전문가</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>조은숙</td><td>42</td><td>여자</td><td>경상남 김해시</td><td>승용차 및 승합차 운전원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>정일임</td><td>43</td><td>여자</td><td>충청남 천안시 서북구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>손민주</td><td>40</td><td>여자</td><td>인천 연수구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>박소민</td><td>35</td><td>여자</td><td>경기 평택시</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>박미화</td><td>53</td><td>여자</td><td>경상남 김해시</td><td>무직</td><td>자녀와 거주 (배우자 별거)</td></tr>
+
+
+        <tr class=""><td>이영미</td><td>56</td><td>여자</td><td>인천 서구</td><td>전화 상담원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>백주원</td><td>58</td><td>남자</td><td>전북 순창군</td><td>승용차 및 승합차 운전원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class="picked"><td>박미</td><td>50</td><td>여자</td><td>경기 시흥시</td><td>경리 사무원</td><td>자녀와 거주 (배우자 별거)</td></tr>
+
+
+        <tr class=""><td>박일우</td><td>52</td><td>여자</td><td>경기 파주시</td><td>그 외 서비스 관련 단순 종사원</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class="picked"><td>서영은</td><td>39</td><td>여자</td><td>서울 구로구</td><td>무직</td><td>배우자·자녀·아버지와 거주</td></tr>
+
+
+        <tr class=""><td>정효정</td><td>38</td><td>여자</td><td>경기 수원시 영통구</td><td>무직</td><td>자녀와 거주 (배우자 별거)</td></tr>
+
+
+        <tr class=""><td>김가연</td><td>38</td><td>여자</td><td>서울 강동구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>조용균</td><td>41</td><td>남자</td><td>경기 의정부시</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
+
+
+        <tr class=""><td>손주용</td><td>43</td><td>여자</td><td>경기 남양주시</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
 
       </tbody>
     </table>
-    <ul class="notes">
-
-      <li>자녀의 나이와 학년은 프로필에 없다. &#x27;초등 1~2학년&#x27;은 30~45세 + 자녀 동거로 대체했고, 학년은 모르는 채로 뒀다.</li>
-
-
-      <li>배우자가 일하는지는 알 수 없다. &#x27;맞벌이&#x27;는 &#x27;본인이 일하는 부모&#x27;로 읽었고, 아빠 2명도 넣었다.</li>
-
-
-      <li>색인에는 &#x27;맞벌이&#x27; 키워드가 없어 직업 없음(무직)을 제외하는 방식으로 걸렀다. 지역은 기획서에 없어 조건을 걸지 않았다.</li>
-
-    </ul>
-    <details class="cands">
-      <summary>후보 47명 전체 보기 (색이 칠해진 사람이 인터뷰한 7명)</summary>
-      <table>
-        <thead><tr><th>이름</th><th>나이</th><th>성별</th><th>지역</th><th>직업</th><th>가족</th></tr></thead>
-        <tbody>
-
-          <tr class=""><td>전정표</td><td>39</td><td>남자</td><td>경기 부천시 오정구</td><td>전직 그 외 하역 및 적재 단순 종사원, 현재 구직중</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>김가람</td><td>38</td><td>남자</td><td>부산 사하구</td><td>총무 사무원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class="picked"><td>김준호</td><td>40</td><td>남자</td><td>서울 강동구</td><td>네트워크 프로그래머</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class="picked"><td>인미랑</td><td>37</td><td>여자</td><td>경기 성남시 중원구</td><td>인쇄 관련 기능 종사원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>유은주</td><td>43</td><td>여자</td><td>경기 부천시 소사구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>장나영</td><td>36</td><td>여자</td><td>부산 해운대구</td><td>상담 전문가</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>이선영</td><td>37</td><td>여자</td><td>대구 달서구</td><td>전기 용접원</td><td>배우자·자녀·부모와 거주</td></tr>
-
-
-          <tr class=""><td>성규현</td><td>38</td><td>남자</td><td>충청남 보령시</td><td>육군 장교</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class="picked"><td>주정은</td><td>43</td><td>여자</td><td>광주 북구</td><td>그 외 일반 영업원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>이재근</td><td>36</td><td>남자</td><td>서울 서대문구</td><td>그 외 물품 이동 장비 조작원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>윤혜준</td><td>43</td><td>여자</td><td>경기 용인시 기흥구</td><td>행사 및 홍보 도우미</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>유원영</td><td>42</td><td>남자</td><td>충청남 서산시</td><td>건물 경비원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>문초희</td><td>31</td><td>여자</td><td>전라남 담양군</td><td>해외 영업원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>조승남</td><td>42</td><td>남자</td><td>경상남 양산시</td><td>생산관리 사무원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>황보형수</td><td>42</td><td>남자</td><td>경기 안양시 동안구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>최수진</td><td>35</td><td>여자</td><td>서울 강남구</td><td>토목 제도사</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>장태선</td><td>30</td><td>남자</td><td>경기 남양주시</td><td>금속기계 부품 조립원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>서시윤</td><td>30</td><td>여자</td><td>부산 동래구</td><td>사무 보조원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>이빛나</td><td>36</td><td>여자</td><td>경상북 포항시 북구</td><td>미술관·박물관 해설 및 안내원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>김경식</td><td>45</td><td>남자</td><td>서울 영등포구</td><td>한식 조리사</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class="picked"><td>박성희</td><td>40</td><td>여자</td><td>울산 북구</td><td>산업용로봇 조작원</td><td>배우자·자녀·아버지와 거주</td></tr>
-
-
-          <tr class=""><td>양지인</td><td>45</td><td>여자</td><td>부산 연제구</td><td>그 외 냉동·냉장·공조기 설치 및 정비원</td><td>배우자·자녀·어머니와 거주</td></tr>
-
-
-          <tr class=""><td>우유진</td><td>37</td><td>남자</td><td>경상남 양산시</td><td>공공행정 사무원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>황혜진</td><td>39</td><td>여자</td><td>부산 영도구</td><td>관광버스 운전원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class="picked"><td>남주경</td><td>40</td><td>여자</td><td>경기 안산시 단원구</td><td>일반 비서</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>김지영</td><td>35</td><td>여자</td><td>울산 북구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>박완기</td><td>43</td><td>남자</td><td>경상북 포항시 남구</td><td>전자계측 제어 기술자 및 연구원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>김성민</td><td>37</td><td>남자</td><td>전라남 무안군</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>이정관</td><td>36</td><td>남자</td><td>서울 강남구</td><td>연예인 매니저</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>임지현</td><td>32</td><td>여자</td><td>경기 하남시</td><td>통신장비 기술자 및 연구원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>정솔지</td><td>35</td><td>여자</td><td>울산 울주군</td><td>조사 전문가</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>김승현</td><td>37</td><td>남자</td><td>경상남 창원시 마산합포구</td><td>그 외 건설·전기 및 생산 관련 관리자</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>조용기</td><td>35</td><td>남자</td><td>대구 달성군</td><td>그 외 교육 전문가</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>조은숙</td><td>42</td><td>여자</td><td>경상남 김해시</td><td>승용차 및 승합차 운전원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>정일임</td><td>43</td><td>여자</td><td>충청남 천안시 서북구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>손민주</td><td>40</td><td>여자</td><td>인천 연수구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>박소민</td><td>35</td><td>여자</td><td>경기 평택시</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>박미화</td><td>53</td><td>여자</td><td>경상남 김해시</td><td>무직</td><td>자녀와 거주 (배우자 별거)</td></tr>
-
-
-          <tr class=""><td>이영미</td><td>56</td><td>여자</td><td>인천 서구</td><td>전화 상담원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>백주원</td><td>58</td><td>남자</td><td>전북 순창군</td><td>승용차 및 승합차 운전원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class="picked"><td>박미</td><td>50</td><td>여자</td><td>경기 시흥시</td><td>경리 사무원</td><td>자녀와 거주 (배우자 별거)</td></tr>
-
-
-          <tr class=""><td>박일우</td><td>52</td><td>여자</td><td>경기 파주시</td><td>그 외 서비스 관련 단순 종사원</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class="picked"><td>서영은</td><td>39</td><td>여자</td><td>서울 구로구</td><td>무직</td><td>배우자·자녀·아버지와 거주</td></tr>
-
-
-          <tr class=""><td>정효정</td><td>38</td><td>여자</td><td>경기 수원시 영통구</td><td>무직</td><td>자녀와 거주 (배우자 별거)</td></tr>
-
-
-          <tr class=""><td>김가연</td><td>38</td><td>여자</td><td>서울 강동구</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>조용균</td><td>41</td><td>남자</td><td>경기 의정부시</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
-
-
-          <tr class=""><td>손주용</td><td>43</td><td>여자</td><td>경기 남양주시</td><td>무직</td><td>배우자·자녀와 거주</td></tr>
-
-        </tbody>
-      </table>
-    </details>
-  </div>
-</section>
-
-<section class="sec">
-  <div class="sec-h"><h2>7명의 답</h2><span>핵심 타깃 5명과 인접 세그먼트 2명</span></div>
-  <p style="font-size:14px;color:var(--ink2);margin:-6px 0 16px;max-width:820px">핵심 타깃은 기획서에 정의한 고객입니다. 이 5명의 답이 페이지가 통하는지를 말해 줍니다. 인접 세그먼트는 조건에서 한 가지만 벗어난 고객군으로, 타깃 범위를 넓혀도 되는지 확인하는 비교군입니다.</p>
-  <div class="cards">
-
-
-<article class="card" data-verdict="yes" data-kind="target">
-  <div class="card-head">
-    <div class="avatar">인</div>
-    <div class="who"><b>인미랑</b><small>37세 여자 · 경기 성남시 중원구 · 인쇄 관련 기능 종사원</small></div>
-    <div class="tags"><span class="tag kind">핵심 타깃</span><span class="tag verdict">누른다</span></div>
-  </div>
-  <p class="stop">멈춘 곳 <b>없음</b></p>
-  <dl class="qa">
-    <dt>불편</dt><dd>있어요. 공장에서 정시 퇴근해도 집에 오면 애 씻기고 알림장 보는 게 한 세트라, 통신문은 대충 넘기다가 아침에 &#x27;준비물 있었네&#x27; 할 때가 있어요.</dd>
-    <dt>지금 방법</dt><dd>알림장이랑 통신문을 밤에 다시 뒤져요. 애 재우고 웹툰 보는 시간 빼서 하는 거라 솔직히 귀찮아요.</dd>
-    <dt>차이</dt><dd>의미 있어요. 저는 오탈자 잡는 게 일이라 서류 보는 건 익숙한데, 문제는 볼 시간이 없는 거거든요. 전날 저녁에 카톡 하나 오면 그걸로 끝이면 좋죠.</dd>
-    <dt>가격</dt><dd>월 4,900원이면 낼 것 같아요. 학교 앱 유료는 안 써요. 다만 진짜 놓친 게 줄어야 계속 내겠죠.</dd>
-    <dt>페이지</dt><dd>눌러요. 첫 화면이 딱 제 얘기라 아래까지 읽었고, 무료로 3장 보내는 건 부담이 없어요.</dd>
-  </dl>
-  <div class="fix"><b>이렇게 바뀌면 누른다</b>"이메일은 잘 안 열어 봐요. 카톡으로 준다면서 이메일은 왜 받는지 한 줄만 있으면 좋겠어요."</div>
-</article>
-
-
-<article class="card" data-verdict="yes" data-kind="target">
-  <div class="card-head">
-    <div class="avatar">남</div>
-    <div class="who"><b>남주경</b><small>40세 여자 · 경기 안산시 단원구 · 일반 비서</small></div>
-    <div class="tags"><span class="tag kind">핵심 타깃</span><span class="tag verdict">누른다</span></div>
-  </div>
-  <p class="stop">멈춘 곳 <b>없음</b></p>
-  <dl class="qa">
-    <dt>불편</dt><dd>있어요. 회사에서는 임원 일정 하나 안 놓치는데 집에 오면 애 통신문은 식탁에 쌓여 있어요. 바이어 온 주에는 아예 못 봐요.</dd>
-    <dt>지금 방법</dt><dd>주말에 몰아서 읽고 냉장고에 붙여요. 중간에 오는 건 놓치고, 그러면 아침에 남편이랑 서로 미루게 돼요.</dd>
-    <dt>차이</dt><dd>달라요. 지금은 제가 읽고 제가 골라내야 하는데, 골라 주는 게 핵심이에요. 단톡방은 제가 잘 안 봐서 별 도움이 안 됐어요.</dd>
-    <dt>가격</dt><dd>4,900원은 내요. 학교 앱 유료 3,900원은 알림만 오지 정리는 안 해 주잖아요. 크몽 건당 5,000원은 매주 맡기기엔 번거로워요.</dd>
-    <dt>페이지</dt><dd>눌러요. 무료로 3장 보내서 결과물 보고 정하면 되니까요. 아이 학년 묻는 것도 당연해 보여요.</dd>
-  </dl>
-  <div class="fix"><b>이렇게 바뀌면 누른다</b>"어디로 보내는지가 없어요. 카톡 채널인지 번호인지 버튼 옆에 있었으면 바로 보냈을 거예요."</div>
-</article>
-
-
-<article class="card" data-verdict="maybe" data-kind="target">
-  <div class="card-head">
-    <div class="avatar">김</div>
-    <div class="who"><b>김준호</b><small>40세 남자 · 서울 강동구 · 네트워크 프로그래머</small></div>
-    <div class="tags"><span class="tag kind">핵심 타깃</span><span class="tag verdict">모르겠다</span></div>
-  </div>
-  <p class="stop">멈춘 곳 <b>무료 제안</b></p>
-  <dl class="qa">
-    <dt>불편</dt><dd>있긴 해요. 장애 나면 밤새는 날이 있어서 그 주는 아내가 다 챙기고, 저는 아침에 &#x27;오늘 뭐 가져가?&#x27; 물어보는 쪽이에요.</dd>
-    <dt>지금 방법</dt><dd>아내가 단톡방에서 확인해요. 저한테는 귀찮다기보다 제가 안 하는 일이라, 아내가 얼마나 귀찮은지는 잘 몰라요.</dd>
-    <dt>차이</dt><dd>사진 보내면 골라 준다는 건 이해가 돼요. 근데 학교 앱 알림이랑 뭐가 다른지는 &#x27;사람이 골라 준다&#x27;는 것 말고는 안 보여요.</dd>
-    <dt>가격</dt><dd>4,900원은 금액 자체는 문제 없어요. 다만 뭘 얼마나 정확히 걸러 주는지 모르면 아내한테 권하기 어려워요.</dd>
-    <dt>페이지</dt><dd>모르겠어요. 무료 제안에서 멈췄어요. &#x27;하루 안에&#x27;가 언제 기준인지, 3장 보내면 그 뒤 통신문도 봐 주는 건지가 없어요. 서비스 만드는 입장에서 보면 범위가 안 적혀 있어요.</dd>
-  </dl>
-  <div class="fix"><b>이렇게 바뀌면 누른다</b>"3장 보내면 정확히 뭐가 언제 오는지 한 줄이면 돼요. &#x27;월요일에 보내면 화요일 저녁 전에 이번 주 표가 온다&#x27; 같은 식으로요."</div>
-</article>
-
-
-<article class="card" data-verdict="maybe" data-kind="target">
-  <div class="card-head">
-    <div class="avatar">주</div>
-    <div class="who"><b>주정은</b><small>43세 여자 · 광주 북구 · 그 외 일반 영업원</small></div>
-    <div class="tags"><span class="tag kind">핵심 타깃</span><span class="tag verdict">모르겠다</span></div>
-  </div>
-  <p class="stop">멈춘 곳 <b>무료 제안</b></p>
-  <dl class="qa">
-    <dt>불편</dt><dd>있어요. 낮에 고객 만나느라 밖에 있으니까 통신문은 저녁에 봐요. 애들 학원 시간표는 제가 다 꿰는데 학교 준비물은 가끔 빠져요.</dd>
-    <dt>지금 방법</dt><dd>단톡방이에요. 엄마들이 빨라서 물어보면 금방 답 와요. 귀찮다기보다 못 물어볼 때가 문제죠, 밤늦게는 못 물어보니까.</dd>
-    <dt>차이</dt><dd>차이는 알겠어요. 근데 저는 단톡방이 잘 돌아가는 편이라 큰 차이는 아니에요. 대신 사진만 보내면 된다는 건 편해 보여요.</dd>
-    <dt>가격</dt><dd>4,900원이면 보험 하나 설계하는 마음으로 따져 봐야죠. 단톡방이 공짜인데 그보다 확실히 나아야 내요. 크몽 건당은 안 써 봤어요.</dd>
-    <dt>페이지</dt><dd>모르겠어요. 무료 제안까지는 읽었는데 &#x27;3장 보내면 하루 안에&#x27;라는 게, 통신문은 매주 오는데 딱 한 번 정리해 주고 끝인 건지 알 수 없어서 멈췄어요.</dd>
-  </dl>
-  <div class="fix"><b>이렇게 바뀌면 누른다</b>"무료로 한 번 해 주는 건지 계속 봐 주는 건지 적혀 있으면 눌러요. 그리고 통신문을 어디로 보내는지도요."</div>
-</article>
-
-
-<article class="card" data-verdict="maybe" data-kind="target">
-  <div class="card-head">
-    <div class="avatar">박</div>
-    <div class="who"><b>박성희</b><small>40세 여자 · 울산 북구 · 산업용로봇 조작원</small></div>
-    <div class="tags"><span class="tag kind">핵심 타깃</span><span class="tag verdict">모르겠다</span></div>
-  </div>
-  <p class="stop">멈춘 곳 <b>신청 항목</b></p>
-  <dl class="qa">
-    <dt>불편</dt><dd>있어요. 라인 근무라 퇴근하면 아버지 식사부터 애 숙제까지 다 챙겨야 해요. 통신문은 가방 바닥에서 구겨진 채로 나올 때가 있어요.</dd>
-    <dt>지금 방법</dt><dd>남편이랑 서로 봤냐고 묻다가 티격태격해요. 결국 제가 밤에 수첩에 적어요. 점검 수첩처럼요. 귀찮은데 안 하면 애가 곤란하니까요.</dd>
-    <dt>차이</dt><dd>전날 저녁에 카톡 오는 건 좋아요. 남편이랑 누가 봤네 안 봤네 할 일이 없어지니까. 학교 앱은 알림이 너무 많아서 꺼 놨어요.</dd>
-    <dt>가격</dt><dd>4,900원은 지금 형편에 고민되는 돈이에요. 자격증 공부하는 것도 급여 때문이라. 무료로 써 보고 진짜 편하면 낼 수도 있어요.</dd>
-    <dt>페이지</dt><dd>모르겠어요. 신청 항목에서 멈췄어요. 카톡으로 보내 준다면서 이메일을 쓰라고 하는데, 저는 이메일을 거의 안 열어요. 뭐가 오는지 모르니 적기 싫어요.</dd>
-  </dl>
-  <div class="fix"><b>이렇게 바뀌면 누른다</b>"이메일 대신 카톡 번호나 아이디만 받으면 바로 눌러요. 이름이랑 학년은 괜찮아요."</div>
-</article>
-
-
-<article class="card" data-verdict="no" data-kind="near">
-  <div class="card-head">
-    <div class="avatar">박</div>
-    <div class="who"><b>박미</b><small>50세 여자 · 경기 시흥시 · 경리 사무원</small></div>
-    <div class="tags"><span class="tag kind">인접 세그먼트</span><span class="tag verdict">안 누른다</span></div>
-  </div>
-  <p class="stop">멈춘 곳 <b>첫 화면</b></p>
-  <dl class="qa">
-    <dt>불편</dt><dd>지금은 없어요. 애들이 커서 통신문 챙길 나이는 지났어요. 애들 어릴 때 혼자 키우면서 준비물 놓친 적은 있었죠.</dd>
-    <dt>지금 방법</dt><dd>그때는 애들한테 직접 물어봤어요. 단톡방 같은 건 없었고요. 지금은 그럴 일이 없어요.</dd>
-    <dt>차이</dt><dd>제 일이 아니라 의미는 없어요. 다만 결산 오차 잡듯이 놓친 걸 잡아 준다는 건 이해가 돼요.</dd>
-    <dt>가격</dt><dd>안 내요. 필요가 없으니까요. 애들 어릴 때였으면 5천 원 정도는 생각했을 거예요.</dd>
-    <dt>페이지</dt><dd>안 눌러요. 첫 화면에서 &#x27;내일 준비물&#x27;이라는 말에서 제 얘기가 아니라고 느꼈어요.</dd>
-  </dl>
-  <div class="fix"><b>이렇게 바뀌면 누른다</b>"저한테 맞는 말은 없어요. 초등 저학년 부모라고 앞에 딱 써 두면 저 같은 사람은 헷갈리지 않고 지나갈 거예요."</div>
-</article>
-
-
-<article class="card" data-verdict="no" data-kind="near">
-  <div class="card-head">
-    <div class="avatar">서</div>
-    <div class="who"><b>서영은</b><small>39세 여자 · 서울 구로구 · 무직</small></div>
-    <div class="tags"><span class="tag kind">인접 세그먼트</span><span class="tag verdict">안 누른다</span></div>
-  </div>
-  <p class="stop">멈춘 곳 <b>첫 화면</b></p>
-  <dl class="qa">
-    <dt>불편</dt><dd>거의 없어요. 낮에 집에 있어서 통신문은 오는 날 바로 읽고 독서 목록 정리하듯 표로 옮겨요. 아버지 병원이랑 겹치는 날은 좀 밀리긴 해요.</dd>
-    <dt>지금 방법</dt><dd>제가 직접 엑셀에 정리해요. 귀찮다기보다 제 방식이 있어서 남한테 맡기는 게 오히려 불안해요.</dd>
-    <dt>차이</dt><dd>제 기준으로는 제가 하는 게 더 꼼꼼해요. 남이 골라 준 걸 다시 확인할 것 같아서 차이가 크지 않아요.</dd>
-    <dt>가격</dt><dd>안 내요. 지금 수입이 없고, 제가 할 수 있는 일에 돈을 쓰는 건 아까워요.</dd>
-    <dt>페이지</dt><dd>안 눌러요. 첫 화면 &#x27;퇴근하고&#x27;에서 저는 아니구나 싶었어요. 맞벌이 집 얘기죠.</dd>
-  </dl>
-  <div class="fix"><b>이렇게 바뀌면 누른다</b>"저 같은 사람은 대상이 아니에요. 다만 &#x27;아이가 여럿이거나 어른을 같이 돌보는 집&#x27;이라고 하면 한 번은 읽어 봤을 거예요."</div>
-</article>
-
-
-  </div>
-</section>
-
-<section class="sec">
-  <div class="sec-h"><h2>다음에 할 일</h2><span>실제 사람 3명에게 확인하세요</span></div>
-  <p class="disclaimer">가상 고객 7명의 답은 통계 프로필로 만든 추정입니다. 실제 사람 3명을 만나 아래 세 가지를 물어보세요.</p>
+  </details>
+</div>
+
+<div class="card">
+  <div class="kick">다음에 할 일</div>
+  <div class="lead">실제 사람 3명을 만나 아래를 물어보세요</div>
   <div class="qs">
     <div class="q"><i>1</i><span>지난달에 아이 준비물을 놓친 적이 있나요? 있었다면 통신문을 못 읽은 건가요, 읽고도 잊은 건가요?</span></div>
     <div class="q"><i>2</i><span>통신문 3장을 보내면 정리표를 하루 안에 드린다고 하면, 어디로 어떻게 보낼 것 같나요? 그리고 그 뒤 새 통신문도 계속 보낼 건가요?</span></div>
     <div class="q"><i>3</i><span>카톡으로 결과를 받는 서비스에 신청할 때 이메일을 적으라고 하면 적나요, 아니면 그냥 나가나요?</span></div>
   </div>
-</section>
+  <p class="ref"><b>참고 자료입니다.</b> 통계로 만든 가상 인물 7명의 추정 반응이라 실제 고객 조사를 대신하지 않습니다. 위 숫자는 판정이 아니라 어느 문장을 다시 볼지 고르는 힌트입니다.</p>
+</div>
 
 <footer>
   페르소나 데이터: NVIDIA Nemotron-Personas-Korea (CC BY 4.0) 100만 명에서 조건 검색. 모든 인물은 AI가 만든 가상 인물입니다.<br>
-  도구: <a href="https://github.com/junleefc/ai-persona-pretest">ai-persona-pretest</a>
+  도구: <a href="https://github.com/junleefc/ai-persona-pretest">AI 고객 페르소나 사전검증</a>
 </footer>
 
 </div>

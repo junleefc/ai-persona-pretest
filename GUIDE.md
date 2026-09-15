@@ -224,9 +224,12 @@ curl -fL -o fill_report.py https://raw.githubusercontent.com/junleefc/ai-persona
 2. 현재 폴더에 `report.json`을 쓴다. 형식은 `fill_report.py` 맨 위 주석에 있다. 요약하면:
    - `project_name, date, brief_file, page_file`
    - `run_info`: 지금 쓰고 있는 모델 이름과 **실제로** 걸린 시간. 예: "Claude Opus 5로 6분 걸림". 시작 시각을 재지 않았으면 시간은 빼고 모델 이름만 적는다. 짐작해서 쓰지 않는다
-   - `stop_section`(첫 화면 / 차이 / 무료 제안 / 신청 항목), `stop_basis`(근거 인원), `stop_why`, `current_sentence`(index.html 원문 그대로), `proposed_sentence`
+   - `stop_section`(첫 화면 / 차이 / 무료 제안 / 신청 항목), `stop_basis`(예: "신청하지 않았거나 망설인 핵심 타깃 3명이 읽다가 멈춘 지점"), `stop_why`, `current_sentence`(index.html 원문 그대로), `proposed_sentence`
+   - `stop_counts`: 네 구간별 인원. 예: `{"첫 화면": 1, "차이": 2, "무료 제안": 0, "신청 항목": 1}`. 2번에서 계산에 쓴 사람만 센다. 리포트에 막대로 그려진다
    - `form_note`(신청 항목 지적. 없으면 `null`), `near_insight`
    - `personas` 7명: `name, age, sex, district, occupation, kind(target|near), verdict(yes|no|maybe), stop(첫 화면|차이|무료 제안|신청 항목|없음), a1~a5, fix`
+     - `a1~a5`는 다섯 질문의 답 전체다. 리포트에서 접혀 있다가 펼치면 다섯 개가 다 나오므로 하나도 비우지 않는다
+     - `fix`는 그 사람이 남긴 한마디다. 접기 밖에 크게 보이는 문장이라 가장 중요한 말을 넣는다
    - `real_questions` 3개
    - `panel_title`, `panel_note`: 위 패널 점검에 걸렸을 때만. 아니면 `null`
    - `sampling`: 이 7명을 어떻게 뽑았는지. 리포트에 깔때기(100만 명 → 조건 매칭 N명 → 프로필 수신 N명 → 7명)와 조건 표로 그려진다. 반드시 채운다.

@@ -14,7 +14,8 @@ report.json 형식:
   "page_file": "index.html",
   "yes_n": 3, "maybe_n": 2, "no_n": 2,
   "stop_section": "첫 화면",
-  "stop_basis": "신청하지 않았거나 망설인 핵심 타깃 3명 중 2명",
+  "stop_basis": "신청하지 않았거나 망설인 핵심 타깃 3명이 읽다가 멈춘 지점",
+  "stop_counts": {"첫 화면": 1, "차이": 2, "무료 제안": 0, "신청 항목": 1},
   "stop_why": "안 누른 2명이 여기서 멈췄다. ...",
   "current_sentence": "index.html에 있는 문장 그대로",
   "proposed_sentence": "바꾼 문장",
@@ -53,6 +54,9 @@ kind: target(핵심 타깃) | near(인접 세그먼트). verdict: yes | no | may
 import html, json, re, sys
 
 KIND = {"target": "핵심 타깃", "near": "인접 세그먼트"}
+COLOR = {"yes": "#0E6E66", "no": "#A8221B", "maybe": "#9A6410"}
+ORDER = {"no": 0, "maybe": 1, "yes": 2}
+SECTIONS = ["첫 화면", "차이", "무료 제안", "신청 항목"]
 VERDICT = {"yes": "누른다", "no": "안 누른다", "maybe": "모르겠다"}
 
 
@@ -75,11 +79,13 @@ def main(json_path, tpl_path, out_path):
     m = re.search(r"<!-- CARD START -->(.*?)<!-- CARD END -->", tpl, re.S)
     card_tpl = m.group(1)
     cards = []
-    for p in ps:
+    ordered = sorted(ps, key=lambda p: (ORDER.get(p["verdict"], 3), 0 if p["kind"] == "target" else 1))
+    for p in ordered:
         c = card_tpl
         vals = {
             "VERDICT": p["verdict"], "KIND": p["kind"],
-            "INITIAL": str(p["name"])[:1], "NAME": p["name"],
+            "ICON_COLOR": COLOR.get(p["verdict"], "#69727A"),
+            "NAME": p["name"],
             "AGE": p["age"], "SEX": p["sex"],
             "DISTRICT": str(p["district"]).replace("-", " "),
             "OCCUPATION": p["occupation"],
@@ -90,6 +96,9 @@ def main(json_path, tpl_path, out_path):
         }
         for k, v in vals.items():
             c = c.replace("{{" + k + "}}", esc(v))
+        stop = (p.get("stop") or "").strip()
+        tag = "" if (p["verdict"] == "yes" or stop in ("", "없음")) else f'<span class="stopped">{esc(stop)}에서 멈춤</span><br>'
+        c = c.replace("{{STOPPED_TAG}}", tag)
         cards.append(c)
     tpl = tpl[: m.start()] + "\n".join(cards) + tpl[m.end():]
 
@@ -124,6 +133,34 @@ def main(json_path, tpl_path, out_path):
     for k, v in top_samp.items():
         tpl = tpl.replace("{{" + k + "}}", esc(v))
 
+    # 결론 픽토그램 (순서는 누른다 → 모르겠다 → 안 누른다)
+    icon_order = sorted(ps, key=lambda p: ({"yes": 0, "maybe": 1, "no": 2}.get(p["verdict"], 3), p["name"]))
+    mi = re.search(r"<!-- ICON START -->(.*?)<!-- ICON END -->", tpl, re.S)
+    icons = []
+    for p in icon_order:
+        b = mi.group(1)
+        for k, v in {"ICON_COLOR": COLOR.get(p["verdict"], "#69727A"),
+                     "ICON_NAME": p["name"], "ICON_AGE": p["age"]}.items():
+            b = b.replace("{{" + k + "}}", esc(v))
+        icons.append(b)
+    tpl = tpl[: mi.start()] + "\n".join(icons) + tpl[mi.end():]
+
+    # 어디서 멈췄나 막대
+    counts = d.get("stop_counts") or {}
+    top = d.get("stop_section")
+    mx = max([int(counts.get(k, 0)) for k in SECTIONS] + [1])
+    ms = re.search(r"<!-- STOP START -->(.*?)<!-- STOP END -->", tpl, re.S)
+    bars = []
+    for name in SECTIONS:
+        n = int(counts.get(name, 0))
+        b = ms.group(1)
+        cls = "hot" if name == top else ("zero" if n == 0 else "")
+        for k, v in {"ST_CLASS": cls, "ST_NAME": name,
+                     "ST_PCT": round(n / mx * 100), "ST_N": n}.items():
+            b = b.replace("{{" + k + "}}", esc(v))
+        bars.append(b)
+    tpl = tpl[: ms.start()] + "\n".join(bars) + tpl[ms.end():]
+
     # 패널 경고 배너: 없으면 통째로 제거
     pn = d.get("panel_note")
     if pn:
@@ -134,8 +171,10 @@ def main(json_path, tpl_path, out_path):
         tpl = re.sub(r"\s*<!-- PANEL START -->.*?<!-- PANEL END -->\s*", "\n", tpl, flags=re.S)
 
     # 신청 항목 콜아웃: 없으면 통째로 제거
-    if not d.get("form_note"):
-        tpl = re.sub(r'\s*<div class="callout" id="form">.*?</div>\s*', "\n", tpl, flags=re.S)
+    if d.get("form_note"):
+        tpl = tpl.replace("<!-- FORM START -->", "").replace("<!-- FORM END -->", "")
+    else:
+        tpl = re.sub(r"\s*<!-- FORM START -->.*?<!-- FORM END -->\s*", "\n", tpl, flags=re.S)
 
     qs = d["real_questions"]
     top = {

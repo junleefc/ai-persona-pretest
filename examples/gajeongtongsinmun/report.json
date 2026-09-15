@@ -585,5 +585,12 @@
   ]
  },
  "run_info": "Claude로 9분 걸림",
- "panel_note": null
+ "panel_note": null,
+ "stop_basis": "신청하지 않았거나 망설인 핵심 타깃 3명이 읽다가 멈춘 지점",
+ "stop_counts": {
+  "첫 화면": 0,
+  "차이": 0,
+  "무료 제안": 2,
+  "신청 항목": 1
+ }
 }
