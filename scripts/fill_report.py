@@ -18,7 +18,7 @@ report.json 형식:
   "current_sentence": "index.html에 있는 문장 그대로",
   "proposed_sentence": "바꾼 문장",
   "form_note": "신청 항목 지적. 없으면 null",
-  "near_insight": "근처 2명이 말해 주는 것",
+  "near_insight": "인접 세그먼트 2명의 반응으로 본 타깃 범위 판단",
   "personas": [
     {"name": "박선미", "age": 37, "sex": "여자", "district": "경기-용인시 수지구", "occupation": "정보 시스템 운영자",
      "kind": "target", "verdict": "yes", "stop": "없음",
@@ -34,11 +34,11 @@ report.json 형식:
     "match_line": "30~55세 남성, 서울·경기·인천, 직업에 자재 또는 건설 + 영업",
     "fetched": 37,
     "fetch_line": "43명 중 무작위 40명 요청, 37명 수신",
-    "pick_line": "타깃 5명은 지역·나이·가족이 겹치지 않게. 근처 2명은 나이 축, 직업 축을 하나씩 벗어나게",
+    "pick_line": "핵심 타깃 5명은 지역·연령·가족이 겹치지 않게. 인접 세그먼트 2명은 연령 축과 직업 축을 하나씩 벗어나게",
     "conditions": [
       {"who": "수원 45세 레미콘 영업팀장", "cond": "30~55세, 남성, 서울·경기·인천, 직업에 자재/건설 + 영업", "result": "43명, 전원 건축자재 영업원"},
-      {"who": "근처 1 (나이 축)", "cond": "같은 직업, 56~65세", "result": "16명 중 1명"},
-      {"who": "근처 2 (직업 축)", "cond": "기계장비 영업, 같은 나이·지역", "result": "128명 중 1명"}
+      {"who": "인접 세그먼트 1 (연령 축)", "cond": "같은 직업, 56~65세", "result": "16명 중 1명"},
+      {"who": "인접 세그먼트 2 (직업 축)", "cond": "기계장비 영업, 같은 연령·지역", "result": "128명 중 1명"}
     ],
     "notes": ["직업명에 '레미콘'은 없어 건축자재 영업원으로 대체했다", "팀장인지, 팀원이 몇 명인지는 프로필에 없다"],
     "candidates": [
@@ -46,12 +46,12 @@ report.json 형식:
     ]
   }
 }
-sampling.candidates에는 프로필을 받은 후보 전원(근처 후보 포함)을 넣고, 7명에 든 사람은 picked: true.
-kind: target | near. verdict: yes | no | maybe. stop: 첫 화면 | 차이 | 무료 제안 | 신청 항목 | 없음
+sampling.candidates에는 프로필을 받은 후보 전원(인접 세그먼트 후보 포함)을 넣고, 7명에 든 사람은 picked: true.
+kind: target(핵심 타깃) | near(인접 세그먼트). verdict: yes | no | maybe. stop: 첫 화면 | 차이 | 무료 제안 | 신청 항목 | 없음
 """
 import html, json, re, sys
 
-KIND = {"target": "타깃", "near": "근처"}
+KIND = {"target": "핵심 타깃", "near": "인접 세그먼트"}
 VERDICT = {"yes": "누른다", "no": "안 누른다", "maybe": "모르겠다"}
 
 
@@ -117,7 +117,7 @@ def main(json_path, tpl_path, out_path):
         "SOURCE_LINE": sp.get("source_line", "NVIDIA Nemotron-Personas-Korea. 공공 통계로 만든 가상 인물. CC BY 4.0"),
         "MATCHED_N": f"{int(sp.get('matched_total', 0)):,}", "MATCH_LINE": sp.get("match_line", ""),
         "FETCHED_N": f"{int(sp.get('fetched', 0)):,}", "FETCH_LINE": sp.get("fetch_line", ""),
-        "PICK_LINE": sp.get("pick_line", "타깃 5명, 근처 2명"),
+        "PICK_LINE": sp.get("pick_line", "핵심 타깃 5명, 인접 세그먼트 2명"),
         "CAND_N": str(len(cands)),
     }
     for k, v in top_samp.items():
