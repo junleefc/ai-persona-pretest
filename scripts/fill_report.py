@@ -147,6 +147,12 @@ def main(json_path, tpl_path, out_path):
 
     # 어디서 멈췄나 막대
     counts = d.get("stop_counts") or {}
+    if not counts:   # 안 적었으면 personas에서 직접 센다 (핵심 타깃 중 신청 안 함/망설임)
+        counts = {k: 0 for k in SECTIONS}
+        for p in ps:
+            st = (p.get("stop") or "").strip()
+            if p.get("kind") == "target" and p.get("verdict") in ("no", "maybe") and st in counts:
+                counts[st] += 1
     top = d.get("stop_section")
     mx = max([int(counts.get(k, 0)) for k in SECTIONS] + [1])
     ms = re.search(r"<!-- STOP START -->(.*?)<!-- STOP END -->", tpl, re.S)
