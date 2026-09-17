@@ -152,6 +152,25 @@ HuggingFace 접속이 안 될 때만 리포에 넣어 둔 [personas.jsonl](perso
 
 ---
 
+## 내 정보는 어디로 가나
+
+**기획서와 페이지 내용은 내 컴퓨터를 떠나지 않습니다.** 이 도구가 인터넷으로 보내는 것은 "몇 번째 행을 달라"는 요청뿐이고, 받는 것은 가상 인물의 프로필입니다. 내 사업 내용은 요청에 담기지 않습니다. 물론 Claude에게는 전달됩니다. 평소 Claude를 쓰는 것과 같은 범위입니다.
+
+**참가자가 실행하는 것은 파이썬 스크립트 두 개입니다.** 무엇을 하는지 미리 알고 쓰세요.
+
+| 파일 | 하는 일 | 인터넷 |
+|---|---|---|
+| [find_personas.py](scripts/find_personas.py) | 색인 파일에서 조건에 맞는 사람을 고르고, 그 사람들의 프로필을 받아 candidates.json으로 저장 | HuggingFace에서 행 번호로 프로필을 받습니다. 내 정보는 보내지 않습니다 |
+| [fill_report.py](scripts/fill_report.py) | report.json을 템플릿에 채워 리포트 HTML을 만듭니다 | 없음. 로컬 파일만 읽고 씁니다 |
+
+`build_index.py`와 `build_sample.py`는 데이터 파일을 만들 때 쓴 제작자용 스크립트입니다. 참가자는 실행하지 않습니다.
+
+**만들어진 리포트는 자바스크립트가 없는 정적 HTML입니다.** 글꼴만 CDN에서 받아오고, 인터넷이 없으면 시스템 글꼴로 표시됩니다. 리포트에는 내 사업 내용이 들어 있으니 공유할 때는 그 점을 생각하세요.
+
+**데이터에 실존 인물은 없습니다.** 전부 통계를 바탕으로 AI가 만든 가상 인물이라 전화번호, 이메일, 주민등록번호 같은 개인정보가 들어 있지 않습니다.
+
+---
+
 ## 파일
 
 | 파일 | 용도 |
@@ -164,8 +183,11 @@ HuggingFace 접속이 안 될 때만 리포에 넣어 둔 [personas.jsonl](perso
 | [templates/report.html](templates/report.html) | 리포트 HTML 템플릿 |
 | [scripts/fill_report.py](scripts/fill_report.py) | report.json을 템플릿에 채워 리포트를 만드는 스크립트. 클로드가 실행 |
 | [examples/gajeongtongsinmun](examples/gajeongtongsinmun) | 실행 예시. 입력(기획서, PRD, 페이지)과 출력(리포트, report.json) |
-| [LICENSE-DATA.md](LICENSE-DATA.md) | 데이터 출처 표기 |
+| [LICENSE-DATA.md](LICENSE-DATA.md) | 데이터 출처 표기 (CC BY 4.0) |
+| [LICENSE](LICENSE) | 코드 라이선스 (MIT) |
 
 ---
 
 동그라미재단 AI Academy 6기 "AI 창업 첫걸음" 2회차 배포물. 만든 사람: 이한준 (스태커스).
+
+코드는 MIT 라이선스, 데이터는 CC BY 4.0입니다. 이 도구의 결과는 가상 인물의 추정 반응이며 실제 시장 검증을 대신하지 않습니다.
