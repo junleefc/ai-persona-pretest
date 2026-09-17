@@ -57,6 +57,8 @@
   .new{background:var(--main-soft);color:var(--ink);font-weight:600;border-left:4px solid var(--main)}
   .now .lb,.new .lb{display:block;font-size:12px;font-weight:800;letter-spacing:.07em;margin-bottom:7px;color:var(--sub)}
   .new .lb{color:var(--main)}
+  .decide{font-size:15px;color:var(--ink2);line-height:1.75;margin-top:16px;padding:14px 18px;background:#F4F2ED;border-radius:10px}
+  .decide b{color:var(--ink)}
 
   .two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
   .two h3{font-size:13px;font-weight:800;letter-spacing:.07em;color:var(--main);margin-bottom:8px}
@@ -183,7 +185,8 @@
   <div class="kick">먼저 고칠 것 하나</div>
   <div class="lead">{{STOP_SECTION}} 구간의 이 문장을 바꾸세요</div>
   <div class="now"><span class="lb">지금</span>{{CURRENT_SENTENCE}}</div>
-  <div class="new"><span class="lb">이렇게</span>{{PROPOSED_SENTENCE}}</div>
+  <div class="new"><span class="lb">제안</span>{{PROPOSED_SENTENCE}}</div>
+  <p class="decide"><b>이 제안을 쓸지는 대표님이 정하세요.</b> 그대로 쓰거나, 방향만 가져와 직접 쓰거나, 동의하지 않으면 안 고쳐도 됩니다. 이 리포트는 어디를 다시 볼지 알려줄 뿐이고, 무엇이 맞는지는 사업을 아는 사람이 압니다.</p>
 </div>
 
 <div class="card">
